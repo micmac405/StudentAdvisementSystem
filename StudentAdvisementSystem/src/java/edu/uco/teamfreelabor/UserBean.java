@@ -1,4 +1,4 @@
-package edu.uco.hsung;
+package edu.uco.teamfreelabor;
 
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
