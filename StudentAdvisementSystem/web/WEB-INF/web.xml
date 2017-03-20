@@ -22,37 +22,37 @@
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
     <security-constraint>
-        <display-name>Constraint Admin</display-name>
+        <display-name>Constraint Advisor</display-name>
         <web-resource-collection>
-            <web-resource-name>Admin</web-resource-name>
+            <web-resource-name>Advisor</web-resource-name>
             <description/>
-            <url-pattern>/faces/adminFolder/*</url-pattern>
+            <url-pattern>/faces/advisorFolder/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <description/>
-            <role-name>adminrole</role-name>
+            <role-name>advisorrole</role-name>
         </auth-constraint>
     </security-constraint>
     <security-constraint>
-        <display-name>Constraint Customer</display-name>
+        <display-name>Constraint Student</display-name>
         <web-resource-collection>
-            <web-resource-name>Customer</web-resource-name>
+            <web-resource-name>Student</web-resource-name>
             <description/>
-            <url-pattern>/faces/customerFolder/*</url-pattern>
+            <url-pattern>/faces/studentFolder/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <description/>
-            <role-name>customerrole</role-name>
+            <role-name>studentrole</role-name>
         </auth-constraint>
     </security-constraint>
         
     <security-role>
         <description/>
-        <role-name>adminrole</role-name>
+        <role-name>advisorrole</role-name>
     </security-role>
     <security-role>
         <description/>
-        <role-name>customerrole</role-name>
+        <role-name>studentrole</role-name>
     </security-role>
     
     <login-config>

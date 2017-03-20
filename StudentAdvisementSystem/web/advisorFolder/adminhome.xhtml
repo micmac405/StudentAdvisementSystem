@@ -3,19 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>user home</title>
-    </h:head> 
+        <title>admin home</title>
+    </h:head>
     <h:body>
-        <h1>User Profile</h1>
+        <h2 style="color: blue">Admin Home Page</h2>
         <br />
         <h2>Hello! #{facesContext.externalContext.userPrincipal.name}</h2>
         <h2>Hi! #{userBean.username}</h2>
         <br />
-        <h:link value="Check Out" outcome="/customerFolder/checkout" /><br />
-        <h:link value="Continue Shopping" outcome="/products" /><br />
-        <h:link value="Logout" outcome="/logout" /> <br />
-        <h:link value="MyAmazon Home Page" outcome="/index" />
-
+        <h:link value="Go MyAmazon Home" outcome="/index" /><br />
+        <h:link value="manage database" outcome="/advisorFolder/dbmanage" /><br />
+        <h:link value="Logout" outcome="/logout" />
     </h:body>
 </html>
 
