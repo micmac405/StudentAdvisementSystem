@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.uco.mmckinnon;
+package edu.uco.teamfreelabor;
 
 import java.util.List;
 
 /**
  *
- * @author alebel
+ * @author teamfreelabor
  */
 public class User {
     private String username;

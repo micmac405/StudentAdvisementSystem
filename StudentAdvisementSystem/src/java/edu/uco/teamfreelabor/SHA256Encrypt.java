@@ -1,4 +1,4 @@
-package edu.uco.mmckinnon;
+package edu.uco.teamfreelabor;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
