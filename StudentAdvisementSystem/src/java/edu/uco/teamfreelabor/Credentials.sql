@@ -2,10 +2,10 @@
    in WSP database
 */
 
-/*
+
 DROP TABLE USERTABLE;
 DROP TABLE GROUPTABLE;
-*/
+
 
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -47,4 +47,5 @@ insert into USERTABLE (username, password, email)
         'john@uco.edu');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john');
 
-
+SELECT * FROM USERTABLE;
+SELECT * FROM GROUPTABLE;
