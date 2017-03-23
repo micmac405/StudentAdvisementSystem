@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:pt="http://java.sun.com/jsf/passthrough"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
         <link rel="stylesheet" href="assets/css/style.css"/>
         <link rel="stylesheet" href="assets/css/form-elements.css"/>
     <h:head>
@@ -44,21 +46,21 @@
                                 </div>
                                 <!--div for login/password and sign in btn -->
                                 <div class="form-bottom text-center">
-                                    <form role="form" action="" method="POST" class="login-form">
+                                    <h:form role="form" class="login-form">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-                                            <input class="form-control" type="text" name="j_username" placeholder="UCO Email Address" />
+                                            <h:inputText class="form-control" p:placeholder="UCO Email Address" />
                                         </div><br />
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                                            <input class="form-control" type="password" name="j_password" placeholder="Password" />
+                                            <h:inputSecret class="form-control" p:placeholder="Password" />
                                         </div>
                                         <br />
-                                        <input type="submit" class="btn btn-primary" value="Sign in!" />
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign in!" action="studenfFolder/profile.xhtml" />
                                         <br />
                                         <br />
                                         Not Registered? <h:link value="Sign up here" outcome="/registration" /><br />
-                                    </form>
+                                    </h:form>
                                 </div>
                             </div>
                         </div>
