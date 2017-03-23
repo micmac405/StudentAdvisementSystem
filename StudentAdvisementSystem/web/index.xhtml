@@ -4,27 +4,28 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:pt="http://java.sun.com/jsf/passthrough"
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
-        <link rel="stylesheet" href="assets/css/style.css"/>
-        <link rel="stylesheet" href="assets/css/form-elements.css"/>
+        
     <h:head>
         <title>Login</title>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="assets/css/style.css"/>
+        <link rel="stylesheet" href="assets/css/form-elements.css"/>
 
         <meta charset="UTF-8"></meta>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
         <meta name="Author" content="Micah McKinnon"></meta>        
     </h:head>
     <h:body>
-        <div class="top-content">
+        <div class="top-content error">
             <div class="inner-bg">
                 <div class="container">
                     <!--div for header -->
                     <div class="row">
                         <div class="col-sm-8 col-sm-offset-2 text-center">
-                            <h1><strong>UCO</strong> Student Advisement Site</h1>
+                            <h1 class="error"><strong>HOW DID YOU GET HERE?</strong> </h1>
                         </div>
                     </div>
                     <div class="center-element">
@@ -36,12 +37,12 @@
                                 <!--div for Login header -->
                                 <div class="form-top" style="background-color: " >
                                     <div class="form-top-left text-left">
-                                        <h3> Login here</h3>
-                                        <p>Enter UCO email address and password to log on:</p>
+                                        <h3 class="error"> DON'T Login here!!!!</h3>
+                                        <p>DON'T Enter UCO email address and password to log on:</p>
                                     </div>
                                     <div class="form-top-right">
                                         <!--<img src="assets/images/CS Logo.png" alt=""/>-->
-                                        <i class="fa fa-lock"></i>
+                                        <i class="fa fa-times" style='color: red'></i>
                                     </div>
                                 </div>
                                 <!--div for login/password and sign in btn -->
@@ -56,10 +57,10 @@
                                             <h:inputSecret class="form-control" p:placeholder="Password" />
                                         </div>
                                         <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign in!" action="studenfFolder/profile.xhtml" />
+                                        
                                         <br />
                                         <br />
-                                        Not Registered? <h:link value="Sign up here" outcome="/registration" /><br />
+                                        Not Registered? TOO BAD!
                                     </h:form>
                                 </div>
                             </div>
