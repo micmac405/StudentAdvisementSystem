@@ -15,6 +15,15 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -28,6 +37,10 @@ public class UserBean implements Serializable {
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
     
+    //Resource for email already configured in glassfish
+    @Resource(name = "mail/WSP")
+    private Session session;
+    
     //@NotNull(message = "Enter a Username!")
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
@@ -38,7 +51,7 @@ public class UserBean implements Serializable {
     private String password;
     
     //@NotNull(message = "Enter an email!")
-    @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
+    @Pattern(regexp = ".{2,}@gmail\\.com$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
 
     private ArrayList<User> users;
@@ -128,7 +141,13 @@ public class UserBean implements Serializable {
             String customerGroup = "studentgroup";
             ps2.setString(1, customerGroup);
             ps2.setString(2, username);
-            ps2.executeUpdate();            
+            ps2.executeUpdate();
+            System.out.print("Email about to send!");
+            Email email = new Email();
+            email.sendEmail(session);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
         finally{
             conn.close();
@@ -174,5 +193,5 @@ public class UserBean implements Serializable {
     public ArrayList<User> getUsers(){
         return users;
     }
-
+    
 }
