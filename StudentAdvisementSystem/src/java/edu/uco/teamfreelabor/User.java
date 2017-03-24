@@ -5,6 +5,7 @@
  */
 package edu.uco.teamfreelabor;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
@@ -14,7 +15,45 @@ import java.util.List;
 public class User {
     private String username;
     private String groups;
+    
     private String email;
+    private String phoneNumber;
+    private String firstName;
+    private String lastName;
+    
+    private BufferedImage profilePhoto;
+
+    public BufferedImage getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(BufferedImage profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
     
     public void setUsername(String u){
         this.username = u;

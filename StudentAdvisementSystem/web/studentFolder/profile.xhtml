@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -51,7 +52,7 @@
                             <a href="#">Appointment<br/></a>
                         </li>
                         <li>
-                            <a href="#">Logout</a>
+                            <h:link value="Logout" outcome="/logout" /> <br/>
                         </li>
                     </ul>
                 </div>
@@ -63,108 +64,49 @@
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <div class="row">
-                                <h4>Advisement Status</h4>
-                                <br />
-                                <h4>Pending</h4>
                                 <br />
                                 <br />
+                                <h3>Advisement Status</h3>
+                                <h4>Pending</h4> <!-- Change to output label -->
+
                                 <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
                             </div>
                         </div>
                         <div class="clear-columns clearfix visible-xs-block"></div>
                     </div>
+                    <h2 class="sub-header">Selected Courses</h2>
+                    <div class="table-responsive">
+                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
+                            <h:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputLabel value="#{class.type}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Number</f:facet>
+                                <h:outputLabel value="#{class.number}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Title</f:facet>
+                                <h:outputLabel value="#{class.title}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
                     <h2 class="sub-header">Courses</h2>
                     <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Semester</th>
-                                    <th>Status</th>
-                                    <th>Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Web Server</td>
-                                    <td>Spring 2017</td>
-                                    <td>pending</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td>SEII</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>Programming 2</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>C</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Semester</th>
-                                    <th>Status</th>
-                                    <th>Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Web Server</td>
-                                    <td>Spring 2017</td>
-                                    <td>pending</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td>SEII</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>Programming 2</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>C</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Semester</th>
-                                    <th>Status</th>
-                                    <th>Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Web Server</td>
-                                    <td>Spring 2017</td>
-                                    <td>pending</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td>SEII</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>Programming 2</td>
-                                    <td>Fall 2016</td>
-                                    <td>completed</td>
-                                    <td>C</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped">
+                            <h:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputLabel value="#{class.type}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Number</f:facet>
+                                <h:outputLabel value="#{class.number}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Title</f:facet>
+                                <h:outputLabel value="#{class.title}"/>
+                            </h:column>
+                        </h:dataTable>
                     </div>
                 </div>
             </div>
@@ -172,83 +114,15 @@
         <!-- Bootstrap core JavaScript
     ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="bootstrap/js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+        <!--        <script src="assets/js/jquery.min.js"></script>
+                <script src="bootstrap/js/bootstrap.min.js"></script>
+                 IE10 viewport hack for Surface/desktop Windows 8 bug 
+                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+        <!-- Minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </h:body>
-    <!--    <h:body>
-            <nav class="navbar navbar-fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <label class="navbar-brand">CSS Advisement</label>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a href="#">Settings</a>
-                            </li>
-                            <li>
-                                <a href="#">Help</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-    
-            <div id="side_bar" class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-3 col-md-2 sidebar">
-                        <ul class="nav nav-sidebar">
-                            <li class="active">
-                                <a href="#">Dashboard<span class="sr-only">(current)</span></a>
-                            </li>
-                            <li>
-                                <a href="#">Appointment<br/></a>
-                            </li>
-                            <li>
-                                <h:link value="Logout" outcome="/logout" />
-                            </li>
-                        </ul>
-                    </div>
-    
-                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                        <h1 class="page-header">User Profile</h1>
-                        <div class="row placeholders">
-                            <div class="col-xs-6 col-sm-3 placeholder">
-                                <img src="assets/images/CS Logo.png" class="img-responsive" alt="Generic placeholder thumbnail"/>
-                                <h:outputLabel class="h4" value="#{userBean.username}"/>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 placeholder">
-                                <div class="row">
-                                    <h4>Advisement Status</h4>
-                                    <br />
-                                    <h4>Pending</h4>
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <button type="button" class="btn btn-default">Edit_Appointment</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-            </div>
-    
-            <h:outputLabel value="Advisement Status"/>
-            <br />
-            <h:outputLabel value="Not scheduled"/>
-    
-            <br />
-            <h:link value="Check Out" outcome="/studentFolder/checkout" /><br />
-            <h:link value="Continue Shopping" outcome="/products" /><br />
-            <h:link value="Logout" outcome="/logout" /> <br />
-            <h:link value="MyAmazon Home Page" outcome="/index" />
-    
-    
-    
-        </h:body>-->
 </html>
 
