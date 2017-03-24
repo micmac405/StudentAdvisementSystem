@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="assets/css/style.css"/>
         <link rel="stylesheet" href="assets/css/form-elements.css"/>
 
-        <title>user home</title>
+        <title>Profile</title>
     </h:head> 
     <h:body>
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -30,7 +30,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#">Settings</a>
+                            <h:link value="Settings" outcome="/studentFolder/studentsettings" />
                         </li>
                         <li>
                             <a href="#">Help</a>
@@ -60,14 +60,14 @@
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <img src="assets/images/CS Logo.png" class="img-responsive" alt="Profile image"/>
-                            <h:outputLabel class="h4" value="#{userBean.username}"/>
+                            <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <div class="row">
                                 <br />
                                 <br />
                                 <h3>Advisement Status</h3>
-                                <h4>Pending</h4> <!-- Change to output label -->
+                                <h4>#{userBean.advisementStatus}</h4> <!-- Change to output label -->
 
                                 <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
                             </div>

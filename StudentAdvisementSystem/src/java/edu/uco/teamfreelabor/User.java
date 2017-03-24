@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.uco.teamfreelabor;
 
 import java.awt.image.BufferedImage;
@@ -20,6 +15,7 @@ public class User {
     private String phoneNumber;
     private String firstName;
     private String lastName;
+    private String advisementStatus;
     
     private BufferedImage profilePhoto;
 
@@ -78,5 +74,12 @@ public class User {
     public String getEmail(){
         return email;
     }
-}
 
+    public String getAdvisementStatus() {
+        return advisementStatus;
+    }
+
+    public void setAdvisementStatus(String advisementStatus) {
+        this.advisementStatus = advisementStatus;
+    }
+}
