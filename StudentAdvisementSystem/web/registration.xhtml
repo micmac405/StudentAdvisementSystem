@@ -1,37 +1,101 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <head>
-        <title>p7MicahM</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <div id="body" class="container">
-            <h:form id="form" class="col-md-5">
-                <h:panelGrid columns="3">
-                    Username:
-                    <h:inputText id="username" size="25" value="#{userBean.username}"/>
-                    <h:message for="username" errorStyle="color:red"/>
-                    Email:
-                    <h:inputText id="email" size="25" value="#{userBean.email}"/>
-                    <h:message for="email" errorStyle="color:red"/>
-                    Password:
-                    <h:inputSecret id="password" size="25" value="#{userBean.password}"/>
-                    <h:message for="password" errorStyle="color:red"/>
-                </h:panelGrid>
-                <br/>
-                <h:commandButton value="Submit" action="#{userBean.insert}"/>
-                <br/>
-                <br/>
-                <h:link value="Go Home" outcome="/index"/>
-            </h:form>
+      xmlns:pt="http://java.sun.com/jsf/passthrough"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+        
+    <h:head>
+        <title>Sign Up</title>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="assets/css/style.css"/>
+        <link rel="stylesheet" href="assets/css/form-elements.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+        <meta charset="UTF-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <meta name="Author" content="Micah McKinnon"></meta>        
+    </h:head>
+    <h:body>
+        <div class="top-content">
+            <div class="inner-bg">
+                <div class="container">
+                    <!--div for header -->
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2 text-center">
+                            <h1><strong>UCO</strong> Student Advisement Site</h1>
+                        </div>
+                    </div>
+                    <div class="center-element">
+                    <!--div for login across page -->
+                    <div class="row" style="width: 45% ; margin: 0 auto;">
+                        <div class="center-element">
+                            <!--div for small login area -->
+                            <div class="form-box center-element">
+                                <!--div for Login header -->
+                                <div class="form-top" >
+                                    <div class="form-top-left text-left">
+                                        <h3> Sign up now</h3>
+                                        <p>Fill in the form below to get access:</p>
+                                    </div>
+                                    <div class="form-top-right">
+                                        <!--<img src="assets/images/CS Logo.png" alt=""/>-->
+                                        <i class="fa fa-pencil"></i>
+                                    </div>
+                                </div>
+                                <!--div for login/password and sign in btn -->
+                                <div class="form-bottom text-center">
+                                    <h:form role="form" class="registration-form">
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                                            <h:inputText class="form-control" p:placeholder="UCO Email Address" />
+                                        </div><br />
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
+                                            <h:inputText class="form-control" p:placeholder="First Name" />
+                                        </div><br />
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+                                            <h:inputText class="form-control" p:placeholder="Last Name" />
+                                        </div><br />
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                                            <h:inputSecret class="form-control" p:placeholder="Password" />
+                                        </div><br />
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
+                                            <h:inputText class="form-control" p:placeholder="Phone Number" />
+                                        </div><br />
+                                        <div class="input-group margin-bottom-sm" >
+                                            <span class="input-group-addon"><i class="fa fa-asterisk fa-fw"></i></span>
+                                            <h:inputText class="form-control" p:placeholder="*UCO ID"/>
+                                        </div><br />
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
+                                            <!--<h:selectOneMenu class="form-control" id="major" p:placeholder="Major">
+                                                <selectItem itemValue="6100 - Computer Science" itemLabel="6100"/>
+                                                <selectItem itemValue="6101 - Applied" itemLabel="6101"/>
+                                                <selectItem itemValue="6102 - Information Science" itemLabel="6102"/>
+                                                <selectItem itemValue="6110 - Software Engineering" itemLabel="6110"/>
+                                                <selectItem itemValue="6660 - Applied Mathematics &amp; Computer Science" itemLabel="6660"/>
+                                            </h:selectOneMenu>-->
+                                            <h:inputText class="form-control" p:placeholder="Major"/>
+                                                    
+                                        </div>
+                                        <br />
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="studenfFolder/profile.xhtml" />
+                                        <br />
+                                        <br />
+                                        All ready Registered? <h:link value="Login here" outcome="/index" /><br />
+                                    </h:form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
-    </body>
+     </h:body>
 </html>
