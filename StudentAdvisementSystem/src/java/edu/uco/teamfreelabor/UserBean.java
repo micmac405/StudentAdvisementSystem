@@ -4,7 +4,15 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.security.Principal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -20,6 +28,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 
 
 @Named(value = "userBean")
@@ -54,7 +63,7 @@ public class UserBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         Principal p = fc.getExternalContext().getUserPrincipal();
         username = p.getName();
-        */
+        
         try{
             users = new ArrayList<>();
             users = getUserList();
