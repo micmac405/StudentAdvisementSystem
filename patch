@@ -1,0 +1,250 @@
+commit 2b8fdd66c6631b7bf50ca82bbb26f9606ecf0866
+Author: Micah McKinnon <micahmckinnon@Micahs-MBP-8.local>
+Date:   Tue Mar 21 21:23:37 2017 -0500
+
+    Revert "fixed issues related to references of wrong usergroups"
+    
+    This reverts commit 1802ec67120bf6f0fe9123a86ba32d3e40317055.
+
+diff --git a/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/Credentials.sql b/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/Credentials.sql
+index ee028fc..1e3ec14 100644
+--- a/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/Credentials.sql
++++ b/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/Credentials.sql
+@@ -2,10 +2,10 @@
+    in WSP database
+ */
+ 
+-
++/*
+ DROP TABLE USERTABLE;
+ DROP TABLE GROUPTABLE;
+-
++*/
+ 
+ create table USERTABLE (
+     ID INT NOT NULL AUTO_INCREMENT,
+@@ -47,5 +47,4 @@ insert into USERTABLE (username, password, email)
+         'john@uco.edu');
+ insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john');
+ 
+-SELECT * FROM USERTABLE;
+-SELECT * FROM GROUPTABLE;
++
+diff --git a/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/UserBean.java b/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/UserBean.java
+index 4b7daee..3c52b06 100644
+--- a/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/UserBean.java
++++ b/StudentAdvisementSystem/src/java/edu/uco/teamfreelabor/UserBean.java
+@@ -4,175 +4,24 @@ import javax.inject.Named;
+ import javax.enterprise.context.SessionScoped;
+ import java.io.Serializable;
+ import java.security.Principal;
+-import java.sql.Connection;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-import java.sql.SQLException;
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+ import javax.annotation.PostConstruct;
+-import javax.annotation.Resource;
+ import javax.faces.context.FacesContext;
+-import javax.sql.DataSource;
+-import javax.validation.constraints.Min;
+-import javax.validation.constraints.NotNull;
+-import javax.validation.constraints.Pattern;
+-import javax.validation.constraints.Size;
+ 
+ @Named(value = "userBean")
+ @SessionScoped
+ public class UserBean implements Serializable {
+ 
+-    @Resource(name = "jdbc/ds_wsp")
+-    private DataSource ds;
+-    
+-    //@NotNull(message = "Enter a Username!")
+-    @Size(min = 3, message = "Username  must be >= 3 characters!")
+-    @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
+     private String username;
+-    
+-    //@NotNull(message = "Enter a Password!")
+-    @Size(min = 3, message = "Password must be >= 3 characters!")
+-    private String password;
+-    
+-    //@NotNull(message = "Enter an email!")
+-    @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
+-    private String email;
+-
+-    private ArrayList<User> users;
+ 
+     @PostConstruct
+     public void init() {
+-        /*
+         FacesContext fc = FacesContext.getCurrentInstance();
+         Principal p = fc.getExternalContext().getUserPrincipal();
+         username = p.getName();
+-        */
+-        try{
+-            users = new ArrayList<>();
+-            users = getUserList();
+-        } catch(SQLException e){
+-            Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, e);
+-        }
+-    }
+-    public ArrayList<User> getUserList() throws SQLException{
+-        if(ds == null){
+-            throw new SQLException("Cannot get Data Source!");
+-        }
+-        
+-        Connection conn = ds.getConnection();
+-        if(conn == null){
+-            throw new SQLException("Cannot get Connection!");
+-        }
+-        
+-        ArrayList<User> users2 = new ArrayList<>();
+-        
+-        try{
+-            String sql = "SELECT usertable.username, usertable.email, grouptable.groupname FROM usertable JOIN grouptable on usertable.username = grouptable.username";
+-            PreparedStatement ps = conn.prepareStatement(sql);
+-            ResultSet result = ps.executeQuery();
+-            
+-            while(result.next()){
+-                boolean added = false;
+-                User newUser = new User();
+-                newUser.setUsername(result.getString("username"));
+-                newUser.setGroups(result.getString("groupname"));
+-                newUser.setEmail(result.getString("email"));
+-                for(int i = 0; i < users2.size(); i++){
+-                    User temp = new User();
+-                    temp = users2.get(i);
+-                    if(newUser.getUsername().equals(temp.getUsername())){
+-                        newUser.setGroups(newUser.getGroups() + ", " + temp.getGroups());
+-                        users2.set(i, newUser);
+-                        added = true;
+-                    }
+-                }
+-                if(users2.isEmpty() || !added){
+-                    users2.add(newUser);
+-                }                
+-            }            
+-        }
+-        finally{
+-            conn.close();
+-        }
+-        return users2;
+-    }
+-    
+-    public String insert() throws SQLException
+-    {
+-        if(ds == null)
+-        {
+-            throw new SQLException("Cannot get DataSource. Insert Failed!");
+-        }
+-        
+-        Connection conn = ds.getConnection();
+-        if(conn == null)
+-        {
+-            throw new SQLException("Cannot get Connection. Insert Failed!");
+-        }        
+-        try{
+-            password = encrypt();
+-            String userTable = "insert into USERTABLE(username, password, email)"
+-                    + "values(?,?,?)";
+-            PreparedStatement ps = conn.prepareStatement(userTable);
+-            ps.setString(1, username);
+-            ps.setString(2, password);
+-            ps.setString(3, email);
+-            ps.executeUpdate();
+-            
+-            String groupTable = "insert into GROUPTABLE(groupname, username)"
+-                    + "values(?,?)";
+-            PreparedStatement ps2 = conn.prepareStatement(groupTable);
+-            String customerGroup = "studentgroup";
+-            ps2.setString(1, customerGroup);
+-            ps2.setString(2, username);
+-            ps2.executeUpdate();            
+-        }
+-        finally{
+-            conn.close();
+-        }        
+-        return "/index";
+-        
+     }
+ 
+     public String getUsername() {
+         return username;
+     }
+-    
+-    public String getPassword(){
+-        return password;
+-    }
+-    
+-    public String getEmail(){
+-        return email;
+-    }
+-    
+-    public void setUsername(String u){
+-        this.username = u;
+-    }
+-    
+-    public void setPassword(String p){
+-        this.password = p;
+-    }
+-    
+-    public void setEmail(String e){
+-        this.email = e;
+-    }
+-    
+-    public String encrypt(){
+-        String s = SHA256Encrypt.encrypt(password);
+-        if(s != null){
+-            return s;
+-        }
+-        else {
+-            return null;
+-        }
+-    }
+-    
+-    public ArrayList<User> getUsers(){
+-        return users;
+-    }
+ 
+ }
+diff --git a/StudentAdvisementSystem/web/WEB-INF/web.xml b/StudentAdvisementSystem/web/WEB-INF/web.xml
+index fddc057..8606496 100644
+--- a/StudentAdvisementSystem/web/WEB-INF/web.xml
++++ b/StudentAdvisementSystem/web/WEB-INF/web.xml
+@@ -67,12 +67,6 @@
+         <error-code>403</error-code>
+         <location>/faces/403.xhtml</location>
+     </error-page>
+-    <resource-ref>
+-        <res-ref-name>jdbc/ds_wsp</res-ref-name>
+-        <res-type>javax.sql.ConnectionPoolDataSource</res-type>
+-        <res-auth>Container</res-auth>
+-        <res-sharing-scope>Shareable</res-sharing-scope>
+-    </resource-ref>
+ 
+ 
+ </web-app>
+diff --git a/StudentAdvisementSystem/web/index.xhtml b/StudentAdvisementSystem/web/index.xhtml
+index 40f870f..2dcfd2f 100755
+--- a/StudentAdvisementSystem/web/index.xhtml
++++ b/StudentAdvisementSystem/web/index.xhtml
+@@ -13,14 +13,14 @@
+             MyAmazon.com Home Page
+         </h2>
+         <h:link value="products browse" outcome="/products" /> <br />
+-        <h:link value="login" outcome="/studentFolder/profile" /> <br />
++        <h:link value="login" outcome="/customerFolder/profile" /> <br />
+         <h:link value="register" outcome="/registration"/> <br/>
+         <h:link value="shopping cart" outcome="/shoppingcart" /> <br />
+         
+         <h2 style="color: red">
+             The following link must not be a public info. Only administrators know the links
+         </h2>
+-        <h:link value="Admin login" outcome="/advisorFolder/adminhome" /> <br />
++        <h:link value="Admin login" outcome="/adminFolder/adminhome" /> <br />
+         <br />
+ 
+     </h:body>
