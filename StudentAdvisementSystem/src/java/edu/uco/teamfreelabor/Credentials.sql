@@ -2,10 +2,10 @@
    in WSP database
 */
 
-/*
+
 DROP TABLE USERTABLE;
 DROP TABLE GROUPTABLE;
-*/
+
 
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
