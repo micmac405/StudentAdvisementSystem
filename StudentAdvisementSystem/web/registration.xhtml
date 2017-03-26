@@ -49,27 +49,29 @@
                                     <h:form role="form" class="registration-form">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="UCO Email Address" />
+                                            <h:inputText class="form-control" p:placeholder="UCO Email Address" value="#{userBean.email}" />
+                                            <h:message for="email" errorStyle="color:red"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="First Name" />
+                                            <h:inputText class="form-control" p:placeholder="First Name" value="#{userBean.firstName}"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Last Name" />
+                                            <h:inputText class="form-control" p:placeholder="Last Name" value="#{userBean.lastName}"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                                            <h:inputSecret class="form-control" p:placeholder="Password" />
+                                            <h:inputSecret class="form-control" p:placeholder="Password" value="#{userBean.password}"/>
+                                            <h:message for="password" errorStyle="color:red"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Phone Number" />
+                                            <h:inputText class="form-control" p:placeholder="Phone Number" value="#{userBean.phoneNumber}"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-asterisk fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="*UCO ID"/>
+                                            <h:inputText class="form-control" p:placeholder="*UCO ID" value="#{userBean.id}"/>
                                         </div><br />
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
@@ -80,11 +82,11 @@
                                                 <selectItem itemValue="6110 - Software Engineering" itemLabel="6110"/>
                                                 <selectItem itemValue="6660 - Applied Mathematics &amp; Computer Science" itemLabel="6660"/>
                                             </h:selectOneMenu>-->
-                                            <h:inputText class="form-control" p:placeholder="Major"/>
+                                            <h:inputText class="form-control" p:placeholder="Major" value="#{userBean.major}"/>
                                                     
                                         </div>
                                         <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="studenfFolder/profile.xhtml" />
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insert}" />
                                         <br />
                                         <br />
                                         All ready Registered? <h:link value="Login here" outcome="/login" /><br />
