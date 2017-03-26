@@ -71,5 +71,4 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-    
 </web-app>

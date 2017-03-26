@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+        <link rel="stylesheet" href="assets/css/style.css"/>
+        <link rel="stylesheet" href="assets/css/form-elements.css"/>
+
+        <title>Settings</title>
+    </head>
+    <body>
+        <!--div for login across page -->
+        <div class="row" style="width: 45% ; margin: 0 auto;">
+            <div class="center-element">
+                <!--div for small login area--> 
+                <div class="form-box center-element">
+                    <!--div for Login header--> 
+                    <div class="form-top" style="background-color: " >
+                        <div class="form-top-left text-left"  >
+                            <h:form>
+                                <div class="input-group">
+                                    <label for="basic-url">First Name</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.firstName}" /><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="basic-url">Last Name</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.lastName}" /><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="basic-url">Phone Number</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.phoneNumber}" /><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="basic-url">Email</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.email}" /><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="basic-url">UCO ID</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.id}" /><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label for="basic-url">Major</label><br/>
+                                    <h:inputText class="form_control" value="#{userBean.major}" /><br/>
+                                </div>
+                                <div>
+                                    <br/>
+                                    <h:commandButton class="btn btn-default" value="Save" action="#{userBean.updateProfile}" />
+                                    <h:commandButton class="btn btn-default" value="Cancel" action="#{userBean.cancelSettings}" />
+                                </div>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
