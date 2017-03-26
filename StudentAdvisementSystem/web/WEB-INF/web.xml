@@ -45,7 +45,6 @@
             <role-name>studentrole</role-name>
         </auth-constraint>
     </security-constraint>
-        
     <security-role>
         <description/>
         <role-name>advisorrole</role-name>
@@ -54,7 +53,6 @@
         <description/>
         <role-name>studentrole</role-name>
     </security-role>
-    
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>jdbc</realm-name>
@@ -73,4 +71,10 @@
         <error-code>403</error-code>
         <location>/faces/403.xhtml</location>
     </error-page>
+    <resource-ref>
+        <res-ref-name>jdbc/ds_wsp</res-ref-name>
+        <res-type>javax.sql.ConnectionPoolDataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
 </web-app>
