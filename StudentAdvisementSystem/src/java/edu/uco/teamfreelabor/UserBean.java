@@ -68,7 +68,7 @@ public class UserBean implements Serializable {
     private String password;
     
     //@NotNull(message = "Enter an email!")
-    @Pattern(regexp = ".{2,}@gmail\\.com$", message = "Must be xx@uco.edu where x is any character!")
+    @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
 
     private ArrayList<User> users;
