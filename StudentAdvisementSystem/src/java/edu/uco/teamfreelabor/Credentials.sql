@@ -51,10 +51,10 @@ insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'admin');
 
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
     major, advisement_status, phone_number)
-    values ('john',
+    values ('john@uco.edu',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
         'john@uco.edu', 'John', 'Grunt', '34565412', 'CS 6100', 'Pending',
         '405-555-1111');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 
 

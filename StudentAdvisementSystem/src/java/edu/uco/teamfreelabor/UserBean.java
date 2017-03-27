@@ -190,8 +190,9 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
+            //advisementStatus = "Done";
             //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, "Done");
+            ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
             ps.executeUpdate();
             
