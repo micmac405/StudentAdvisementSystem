@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -69,10 +70,13 @@ public class UserBean implements Serializable {
 
 
     @PostConstruct
+    @Transactional
     public void init() {
-        //FacesContext fc = FacesContext.getCurrentInstance();
-        //Principal p = fc.getExternalContext().getUserPrincipal();
-        //username = p.getName();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        if(fc.getExternalContext().getUserPrincipal() != null) {
+        Principal p = fc.getExternalContext().getUserPrincipal();
+        username = p.getName();
+    }
 
   //start of Student_Profile merge conflict
         try {
