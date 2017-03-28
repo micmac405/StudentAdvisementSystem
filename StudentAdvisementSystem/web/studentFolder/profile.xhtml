@@ -10,8 +10,10 @@
             <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
-            <link rel="stylesheet" href="assets/css/style.css"/>
-            <link rel="stylesheet" href="assets/css/form-elements.css"/>
+            <!--<link rel="stylesheet" href="assets/css/style.css"/>
+            <link rel="stylesheet" href="assets/css/form-elements.css"/>-->
+            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>
             
             <title>Profile</title>
     </h:head> 
@@ -60,7 +62,8 @@
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3 placeholder">
-                            <img src="assets/images/CS Logo.png" class="img-responsive" alt="Profile image"/>
+                            <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
+                            <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
