@@ -13,7 +13,7 @@
             <h:outputStylesheet name="css/style.css"/>
             <h:outputStylesheet name="css/form-elements.css"/>
             
-            <title>Profile</title>
+            <title>Calendar</title>
     </h:head> 
     <h:body>
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -46,22 +46,22 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-                        <li class="active">
-                            <a href="#">Profile<span class="sr-only">(current)</span></a>
+                        <li >
+                            <h:link value="Profile" outcome="/studentFolder/profile" />
                         </li>
-                        <li>
-                            <h:link value="Appointment" outcome="/studentFolder/studentappointment" />
+                        <li class="active">
+                            <a href="#">Appointment<span class="sr-only">(current)</span></a>
                         </li>
                         <li>
                             <h:link value="Logout" outcome="/logout" /> <br/>
                         </li>
                     </ul>
                 </div>
-                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+<!--                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
-                            <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
+                            <img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
@@ -69,9 +69,9 @@
                                 <br />
                                 <br />
                                 <h3>Advisement Status</h3>
-                                <h4>#{userBean.advisementStatus}</h4> <!-- Change to output label -->
+                                <h4>#{userBean.advisementStatus}</h4>  Change to output label 
 
-                                <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
+                                <button type="button" class="btn btn-default">Edit Appointment</button>
                             </div>
                         </div>
                         <div class="clear-columns clearfix visible-xs-block"></div>
@@ -110,7 +110,7 @@
                             </h:column>
                         </h:dataTable>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
         <!-- Bootstrap core JavaScript
