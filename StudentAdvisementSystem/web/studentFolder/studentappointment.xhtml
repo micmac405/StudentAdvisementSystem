@@ -2,20 +2,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:head>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
-            <h:outputStylesheet name="css/style.css"/>
-            <h:outputStylesheet name="css/form-elements.css"/>
-            
-            <title>Calendar</title>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+
+        <title>Calendar</title>
     </h:head> 
     <h:body>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>
+        </f:facet>
+
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -57,62 +60,35 @@
                         </li>
                     </ul>
                 </div>
-<!--                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <div class="row placeholders">
-                        <div class="col-xs-6 col-sm-3 placeholder">
-                            <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
-                            <img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>
-                            <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
-                        </div>
-                        <div class="col-xs-6 col-sm-3 placeholder">
-                            <div class="row">
-                                <br />
-                                <br />
-                                <h3>Advisement Status</h3>
-                                <h4>#{userBean.advisementStatus}</h4>  Change to output label 
+                <h:form>
+                    <div class="col-md-10 container-fluid main">
+                        <h3 style="margin-top: 0">Appointment: Need to schedule</h3>
+                        <p:growl id="messages" showDetail="true" />
+                        <p:schedule id="schedule" value="#{studentScheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT-5"
+                                    draggable="false" resizable="false" slotMinutes="10" tooltip="true">
 
-                                <button type="button" class="btn btn-default">Edit Appointment</button>
-                            </div>
-                        </div>
-                        <div class="clear-columns clearfix visible-xs-block"></div>
+                            <!--<p:ajax event="dateSelect" listener="#{studentScheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />-->
+                            <p:ajax event="eventSelect" listener="#{studentScheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <!--<p:ajax event="eventMove" listener="#{studentScheduleView.onEventMove}" update="messages" />-->
+                            <!--<p:ajax event="eventResize" listener="#{studentScheduleView.onEventResize}" update="messages" />-->
+
+                        </p:schedule>
                     </div>
-                    <h2 class="sub-header">Selected Courses</h2>
-                    <div class="table-responsive">
-                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
-                            <h:column>
-                                <f:facet name="header">Type</f:facet>
-                                <h:outputLabel value="#{class.type}" />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Number</f:facet>
-                                <h:outputLabel value="#{class.number}"/>
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Title</f:facet>
-                                <h:outputLabel value="#{class.title}"/>
-                            </h:column>
-                        </h:dataTable>
-                    </div>
-                    <h2 class="sub-header">Courses</h2>
-                    <div class="table-responsive">
-                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped">
-                            <h:column>
-                                <f:facet name="header">Type</f:facet>
-                                <h:outputLabel value="#{class.type}" />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Number</f:facet>
-                                <h:outputLabel value="#{class.number}"/>
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header">Title</f:facet>
-                                <h:outputLabel value="#{class.title}"/>
-                            </h:column>
-                        </h:dataTable>
-                    </div>
-                </div>-->
+
+                    <p:dialog widgetVar="eventDialog" header="Appointment">
+                        <h:panelGrid id="eventDetails" columns="1">
+                            <p:outputLabel id="display_time" value="#{studentScheduleView.currentEventDetails()}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Cancel" oncomplete="PF('eventDialog').hide();"/>
+                                <p:commandButton id="addButton" value="Save" actionListener="#{studentScheduleView.addEvent}" 
+                                                 oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            </f:facet>
+                        </h:panelGrid>
+                    </p:dialog>    
+                </h:form>
             </div>
         </div>
+
         <!-- Bootstrap core JavaScript
     ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
@@ -121,7 +97,7 @@
                  IE10 viewport hack for Surface/desktop Windows 8 bug 
                 <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
         <!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
 
         <!-- Minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
