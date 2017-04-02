@@ -47,7 +47,7 @@ public class UserBean implements Serializable {
     //private String firstName;
     //private String lastName;
     //private String id;
-    private String major;
+    //private String major;
     private String advisementStatus;
 
     private BufferedImage profilePhoto;
@@ -84,6 +84,9 @@ public class UserBean implements Serializable {
     @Pattern(regexp = "[*]?\\d{8}", message = "Must be 8 digits!")
     private String id;
 
+    @Pattern(regexp = "^[^-]", message = "Must select a major!")
+    private String major;
+    
     private ArrayList<User> users;
 
 
