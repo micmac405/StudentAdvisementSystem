@@ -20,7 +20,7 @@ import javax.naming.InitialContext;
  */
 public class Email {
     
-    public void sendEmail(Session session, String email) throws Exception {
+    public void sendEmail(Session session, String email, String message) throws Exception {
         InitialContext ctx = new InitialContext();
         session = (Session) ctx.lookup("mail/WSP");
         session.setDebug(true);
@@ -30,15 +30,9 @@ public class Email {
                 new InternetAddress(email, "wsptermproject@gmail.com"));
         msg.setFrom(new InternetAddress("wsptermproject@gmail.com", 
                 "Team Free Labor"));
-        msg.setText("HEre is the code!");
+        msg.setText(message);
+        
         System.out.print("Inside email class");
-        //Body Text.
-        //BodyPart messageBodyPart = new MimeBodyPart();
-        //messageBodyPart.setText("Here is the code: " + "1234" + 
-               // "\nEnter this back on the advisement site.");
-        
-        
-        //send email
         Transport.send(msg);
     }
 }

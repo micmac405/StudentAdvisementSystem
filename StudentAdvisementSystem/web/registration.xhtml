@@ -46,10 +46,10 @@
                                 </div>
                                 <!--div for login/password and sign in btn -->
                                 <div class="form-bottom text-center">
-                                    <h:form role="form" class="registration-form">
+                                    <h:form role="form" class="registration-form" id="registrationform">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="UCO Email Address" value="#{userBean.email}" />
+                                            <h:inputText class="form-control" id="email" p:placeholder="UCO Email Address" value="#{userBean.email}" />
                                             <h:message for="email" errorStyle="color:red"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
@@ -62,7 +62,7 @@
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                                            <h:inputSecret class="form-control" p:placeholder="Password" value="#{userBean.password}"/>
+                                            <h:inputSecret class="form-control" id="password" p:placeholder="Password" value="#{userBean.password}"/>
                                             <h:message for="password" errorStyle="color:red"/>
                                         </div><br />
                                         <div class="input-group margin-bottom-sm" >
@@ -86,7 +86,7 @@
                                                     
                                         </div>
                                         <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insert}" />
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insertTemp}" />
                                         <br />
                                         <br />
                                         All ready Registered? <h:link value="Login here" outcome="/login" /><br />

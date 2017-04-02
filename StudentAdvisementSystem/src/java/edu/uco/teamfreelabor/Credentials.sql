@@ -3,9 +3,7 @@
 */
 
 
-DROP TABLE USERTABLE;
-DROP TABLE GROUPTABLE;
-
+DROP TABLE IF EXISTS USERTABLE, GROUPTABLE, TEMPUSERTABLE;
 
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -25,6 +23,21 @@ create table GROUPTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
     GROUPNAME varchar(255),
     USERNAME varchar(255),
+    primary key (id)
+);
+
+create table TEMPUSERTABLE (
+    ID INT NOT NULL AUTO_INCREMENT,
+    USERNAME varchar(255),
+    PASSWORD char(64), /* SHA-256 encryption */
+    EMAIL varchar(255),
+    FIRST_NAME varchar(40),
+    LAST_NAME varchar(40),
+    UCO_ID varchar(10),
+    MAJOR varchar(20),
+    ADVISEMENT_STATUS varchar(20),
+    PHONE_NUMBER varchar(13),
+    code varchar(5),
     primary key (id)
 );
 
