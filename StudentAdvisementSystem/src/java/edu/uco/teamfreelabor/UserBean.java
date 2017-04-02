@@ -43,12 +43,6 @@ public class UserBean implements Serializable {
     //private BackgroundJobManager clearDB;
     
     private Session session;
-    //private String groups; Dont think we need this
-    private String phoneNumber;
-    private String firstName;
-    private String lastName;
-    private String id;
-    private String major;
 
     private String advisementStatus;
 
@@ -349,10 +343,8 @@ public class UserBean implements Serializable {
         else {
             return null;
         }
-
-  public BufferedImage getProfilePhoto() {
-        return profilePhoto;
     }
+
     //create random digit and return as string
     public String randomDigitString(){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 10);
@@ -409,7 +401,6 @@ public class UserBean implements Serializable {
     public String getAdvisementStatus() {return advisementStatus;}
 
     public void setAdvisementStatus(String advisementStatus) {this.advisementStatus = advisementStatus;}
-    
 
     public String getPassword(){return password;}
      
