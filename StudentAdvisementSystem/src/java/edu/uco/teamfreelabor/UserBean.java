@@ -13,9 +13,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -41,10 +43,10 @@ public class UserBean implements Serializable {
 
     private String groups;
 
-    private String phoneNumber;
-    private String firstName;
-    private String lastName;
-    private String id;
+    //private String phoneNumber;
+    //private String firstName;
+    //private String lastName;
+    //private String id;
     private String major;
     private String advisementStatus;
 
@@ -65,6 +67,22 @@ public class UserBean implements Serializable {
     //@NotNull(message = "Enter an email!")
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
+    
+   // @NotNull(message = "Enter a phone number!")
+    @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Must be in phone number format!")
+    private String phoneNumber;
+    
+    //@NotNull(message = "Enter your first name!")
+    @Size(min = 1, message = "Enter your first name!")
+    private String firstName;
+    
+    //@NotNull(message = "Enter your last name!")
+    @Size(min = 1, message = "Enter your last name!")
+    private String lastName;
+    
+    //@NotNull(message = "Enter your UCO ID!")
+    @Pattern(regexp = "[*]?\\d{8}", message = "Must be 8 digits!")
+    private String id;
 
     private ArrayList<User> users;
 
@@ -298,6 +316,10 @@ public class UserBean implements Serializable {
     public void setMajor(String major) {
         this.major = major;
     }
+    
+    public List<SelectItem> getMajors() {
+        return User.majorList();
+    }
 
     public String getAdvisementStatus() {
         return advisementStatus;
@@ -336,6 +358,8 @@ public class UserBean implements Serializable {
     public ArrayList<User> getUsers(){
         return users;
     }
+    
+
     
     
     //start of master merge conflict

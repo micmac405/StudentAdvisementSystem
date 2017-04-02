@@ -9,7 +9,8 @@
         <title>Validation</title>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
-        <link rel="stylesheet" href="assets/css/style.css"/>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="resources/css/style.css"/>
         <link rel="stylesheet" href="resources/css/form-elements.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
@@ -39,25 +40,24 @@
                                         <h3> Verify email address</h3>
                                         <p>An email with your verification code has been sent to</p>
                                         <p> youremail@uco.edu</p>
-                                        <!--<p>#{userBean.email}</p>-->
                                         <p>Enter the code here:</p>
                                     </div>
                                     <div class="form-top-right">
-                                        <!--<img src="assets/images/CS Logo.png" alt=""/>-->
+                                        <!--<img src="assets/images/CSLogo.png" alt=""/>-->
                                         <i class="fa fa-check"></i>
                                     </div>
                                 </div>
                                 <!--div for login/password and sign in btn -->
                                 <div class="form-bottom text-center">
-                                    <h:form role="form" class="registration-form">
+                                    <h:form role="form" class="validation-form">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-arrow-right fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Verification Code" value="#{userBean.email}" />
+                                            <h:inputText class="form-control" p:placeholder="Verification Code" />
                                             <h:message for="code" errorStyle="color:red"/>
                                         </div><br />
                                         
                                         <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Verify" action="#{userBean.insert}" />
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Verify" action="#{userBean.insert()}"/>
                                         <br />
                                         <br />
                                         <!--All ready Registered? <h:link value="Login here" outcome="/login" /><br />-->
