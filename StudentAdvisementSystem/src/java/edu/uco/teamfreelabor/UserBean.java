@@ -25,8 +25,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-
-
 @Named(value = "userBean")
 @SessionScoped
 public class UserBean implements Serializable {
@@ -38,15 +36,14 @@ public class UserBean implements Serializable {
     @Resource(name = "mail/WSP")
     private Session session;
     
-
     private String groups;
 
     private String phoneNumber;
     private String firstName;
     private String lastName;
-    private String id;
+    private String id; //change to ucoID after sprint
     private String major;
-    private String advisementStatus;
+    private String advisementStatus = "Not Selected";
 
     private BufferedImage profilePhoto;
 
@@ -190,9 +187,7 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            //advisementStatus = "Done";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, advisementStatus); //Default will set the default value in sql -- How to use fem java ?
             ps.setString(9, phoneNumber);
             ps.executeUpdate();
             
@@ -216,7 +211,6 @@ public class UserBean implements Serializable {
         }        
         return "/login";
     }
-    
 
   public BufferedImage getProfilePhoto() {
         return profilePhoto;
