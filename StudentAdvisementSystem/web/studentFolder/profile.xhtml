@@ -6,18 +6,23 @@
 
 
     <h:head>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
-            <!--<link rel="stylesheet" href="assets/css/style.css"/>
-            <link rel="stylesheet" href="assets/css/form-elements.css"/>-->
-            <h:outputStylesheet name="css/style.css"/>
-            <h:outputStylesheet name="css/form-elements.css"/>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> -->
+<!--            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>-->
             
             <title>Profile</title>
     </h:head> 
     <h:body>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/form-elements.css"/>
+        
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -52,7 +57,7 @@
                             <a href="#">Profile<span class="sr-only">(current)</span></a>
                         </li>
                         <li>
-                            <a href="#">Appointment<br/></a>
+                            <h:link value="Appointment" outcome="/studentFolder/studentappointment" />
                         </li>
                         <li>
                             <h:link value="Logout" outcome="/logout" /> <br/>
@@ -123,7 +128,7 @@
                  IE10 viewport hack for Surface/desktop Windows 8 bug 
                 <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
         <!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
 
         <!-- Minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+
+        <title>Calendar</title>
+    </h:head> 
+    <h:body>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>
+        </f:facet>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <!-- if the screen is too small show button dropdown -->
+                    <!--                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>-->
+                    <label class="navbar-brand" href="#">CS Advisement<br/></label>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <h:link value="Settings" outcome="/studentFolder/studentsettings" />
+                        </li>
+                        <li>
+                            <a href="#">Help</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right">
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li >
+                            <h:link value="Profile" outcome="/studentFolder/profile" />
+                        </li>
+                        <li class="active">
+                            <a href="#">Appointment<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li>
+                            <h:link value="Logout" outcome="/logout" /> <br/>
+                        </li>
+                    </ul>
+                </div>
+                <h:form id="scheduleForm">
+                    <div class="col-md-10 container-fluid main">
+                        <!--<p:outputLabel class="h3 margin-top: 0" id="eventStatus" value="Appointment: #{userBean.advisementStatus}"/>-->
+                        <h:panelGroup id="eventStatus" >
+                        <p:outputLabel class="h3 margin-top: 0" value="Appointment: #{userBean.advisementStatus}"/>
+                        </h:panelGroup>
+                        <p:growl id="messages" showDetail="true" />
+                        <p:schedule id="schedule" value="#{studentScheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT-5"
+                                    draggable="false" resizable="false" slotMinutes="10" tooltip="true">
+
+                            <!--<p:ajax event="dateSelect" listener="#{studentScheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />-->
+                            <p:ajax event="eventSelect" listener="#{studentScheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <!--<p:ajax event="eventMove" listener="#{studentScheduleView.onEventMove}" update="messages" />-->
+                            <!--<p:ajax event="eventResize" listener="#{studentScheduleView.onEventResize}" update="messages" />-->
+
+                        </p:schedule>
+                    </div>
+
+                    <p:dialog widgetVar="eventDialog" header="Appointment">
+                        <h:panelGrid id="eventDetails" columns="1">
+                            <p:outputLabel id="display_time" value="#{studentScheduleView.currentEventDetails()}"/>
+                            <f:facet name="footer">
+                                <p:commandButton value="Cancel" oncomplete="PF('eventDialog').hide();"/>
+                                <p:commandButton id="addButton" value="Save" actionListener="#{studentScheduleView.addEvent}" 
+                                                 oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            </f:facet>
+                        </h:panelGrid>
+                    </p:dialog>    
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <!--        <script src="assets/js/jquery.min.js"></script>
+                <script src="bootstrap/js/bootstrap.min.js"></script>
+                 IE10 viewport hack for Surface/desktop Windows 8 bug 
+                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
+        <!-- jQuery -->
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+
+        <!-- Minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </h:body>
+</html>
+
