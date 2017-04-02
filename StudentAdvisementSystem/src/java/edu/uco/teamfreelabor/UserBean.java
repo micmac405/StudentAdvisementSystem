@@ -43,7 +43,7 @@ public class UserBean implements Serializable {
     private String lastName;
     private String id; //change to ucoID after sprint
     private String major;
-    private String advisementStatus;
+    private String advisementStatus = "Not Selected";
 
     private BufferedImage profilePhoto;
 
@@ -187,9 +187,7 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            //advisementStatus = "Done";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, advisementStatus); //Default will set the default value in sql -- How to use fem java ?
             ps.setString(9, phoneNumber);
             ps.executeUpdate();
             
