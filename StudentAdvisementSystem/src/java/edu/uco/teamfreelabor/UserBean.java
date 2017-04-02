@@ -13,20 +13,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+
 
 @Named(value = "userBean")
 @SessionScoped
@@ -48,6 +49,7 @@ public class UserBean implements Serializable {
     private String lastName;
     private String id;
     private String major;
+
     private String advisementStatus;
 
     private BufferedImage profilePhoto;
@@ -55,18 +57,35 @@ public class UserBean implements Serializable {
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
     
-    //@NotNull(message = "Enter a Username!")
+
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
     private String username;
     
-    //@NotNull(message = "Enter a Password!")
+
     @Size(min = 3, message = "Password must be >= 3 characters!")
     private String password;
     
-    //@NotNull(message = "Enter an email!")
+
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
+    
+    @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
+    private String phoneNumber;
+    
+
+    private String firstName;
+    
+
+    private String lastName;
+    
+    
+    @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
+    private String id;
+
+
+    private String major;
+    
     private ArrayList<User> users;
 
 
@@ -292,9 +311,7 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            //advisementStatus = "Done";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, advisementStatus); //Default will set the default value in sql -- How to use fem java ?
             ps.setString(9, phoneNumber);
             ps.executeUpdate();
             
@@ -322,7 +339,7 @@ public class UserBean implements Serializable {
         }        
         return "/validate";
     }
-    
+
     //encrypt pw
     public String encrypt(){
         String s = SHA256Encrypt.encrypt(password);
@@ -332,6 +349,9 @@ public class UserBean implements Serializable {
         else {
             return null;
         }
+
+  public BufferedImage getProfilePhoto() {
+        return profilePhoto;
     }
     //create random digit and return as string
     public String randomDigitString(){
@@ -383,11 +403,14 @@ public class UserBean implements Serializable {
     public String getMajor() {return major;}
 
     public void setMajor(String major) {this.major = major;}
+    
+    public List<SelectItem> getMajors() {return User.majorList();}
 
     public String getAdvisementStatus() {return advisementStatus;}
 
     public void setAdvisementStatus(String advisementStatus) {this.advisementStatus = advisementStatus;}
     
+
     public String getPassword(){return password;}
      
     public void setPassword(String p){this.password = p;}

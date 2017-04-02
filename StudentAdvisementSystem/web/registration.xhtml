@@ -3,14 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:pt="http://java.sun.com/jsf/passthrough"
-      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
         
     <h:head>
         <title>Sign Up</title>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
-        <link rel="stylesheet" href="assets/css/style.css"/>
-        <link rel="stylesheet" href="assets/css/form-elements.css"/>
+        <link rel="stylesheet" href="resources/css/style.css"/>
+        <link rel="stylesheet" href="resources/css/form-elements.css"/>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
         <meta charset="UTF-8"></meta>
@@ -49,44 +50,57 @@
                                     <h:form role="form" class="registration-form" id="registrationform">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-                                            <h:inputText class="form-control" id="email" p:placeholder="UCO Email Address" value="#{userBean.email}" />
-                                            <h:message for="email" errorStyle="color:red"/>
-                                        </div><br />
+                                            <h:inputText id="email" class="form-control" p:placeholder="UCO Email Address" value="#{userBean.email}"
+                                                         required="true" requiredMessage="Must enter your UCO email address!"/>
+                                        </div>
+                                        <h:message for="email" errorStyle="color:red"/><br />
+                                        
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="First Name" value="#{userBean.firstName}"/>
-                                        </div><br />
+                                            <h:inputText id="firstName" class="form-control" p:placeholder="First Name" value="#{userBean.firstName}"
+                                                         required="true" requiredMessage="Must enter your first name!"/>
+                                        </div>
+                                        <h:message for="firstName" errorStyle="color:red"/><br />
+                                            
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Last Name" value="#{userBean.lastName}"/>
-                                        </div><br />
+                                            <h:inputText id="lastName" class="form-control" p:placeholder="Last Name" value="#{userBean.lastName}"
+                                                         required="true" requiredMessage="Must enter your last name!"/>
+                                        </div>
+                                            <h:message for="lastName" errorStyle="color:red"/><br />
+                                        
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                                            <h:inputSecret class="form-control" id="password" p:placeholder="Password" value="#{userBean.password}"/>
-                                            <h:message for="password" errorStyle="color:red"/>
-                                        </div><br />
+                                            <h:inputSecret id="password" class="form-control" p:placeholder="Password" value="#{userBean.password}"
+                                                           required="true" requiredMessage="Must enter a password!"/>
+                                        </div>
+                                            <h:message for="password" errorStyle="color:red"/><br />
+                                            
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Phone Number" value="#{userBean.phoneNumber}"/>
-                                        </div><br />
+                                            <h:inputText id="phoneNumber" class="form-control" p:placeholder="Phone Number" value="#{userBean.phoneNumber}"
+                                                         required="true" requiredMessage="Must enter your phone number!"/>
+                                        </div>
+                                            <h:message for="phoneNumber" errorStyle="color:red"/><br />
+                                            
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-asterisk fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="*UCO ID" value="#{userBean.id}"/>
-                                        </div><br />
+                                            <h:inputText id="id" class="form-control" p:placeholder="UCO ID" value="#{userBean.id}"
+                                                         required="true" requiredMessage="Must enter your UCO ID!"/>
+                                        </div>
+                                            <h:message for="id" errorStyle="color:red"/><br />
+                                            
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
-                                            <!--<h:selectOneMenu class="form-control" id="major" p:placeholder="Major">
-                                                <selectItem itemValue="6100 - Computer Science" itemLabel="6100"/>
-                                                <selectItem itemValue="6101 - Applied" itemLabel="6101"/>
-                                                <selectItem itemValue="6102 - Information Science" itemLabel="6102"/>
-                                                <selectItem itemValue="6110 - Software Engineering" itemLabel="6110"/>
-                                                <selectItem itemValue="6660 - Applied Mathematics &amp; Computer Science" itemLabel="6660"/>
-                                            </h:selectOneMenu>-->
-                                            <h:inputText class="form-control" p:placeholder="Major" value="#{userBean.major}"/>
-                                                    
+                                            <h:selectOneMenu id ="major" class="form-control" value="#{userBean.major}" style="height: 50px"
+                                                             required="true" requiredMessage="Must select a major!" >
+                                                <f:selectItem itemValue="#{null}" itemLabel="Select Major" noSelectionOption="true"/>
+                                                <f:selectItems value="#{userBean.majors}"/>
+                                            </h:selectOneMenu>        
                                         </div>
-                                        <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insertTemp}" />
+                                            <h:message for="major" errorStyle="color: red"/><br /><br />
+                                            
+                                        <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insert}" />
                                         <br />
                                         <br />
                                         All ready Registered? <h:link value="Login here" outcome="/login" /><br />

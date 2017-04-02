@@ -1,7 +1,9 @@
 package edu.uco.teamfreelabor;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
+import javax.faces.model.SelectItem;
 
 /**
  *
@@ -10,7 +12,7 @@ import java.util.List;
 public class User {
     private String username;
     private String groups;
-    
+    private String major;
     private String email;
     private String phoneNumber;
     private String firstName;
@@ -74,6 +76,18 @@ public class User {
     public String getEmail(){
         return email;
     }
+    
+    public static List<SelectItem> majorList() {
+        return majors;
+    }
+    
+    public void setMajor(String m){
+        this.major = m;
+    }
+    
+    public String getMajor(){
+        return major;
+    }
 
     public String getAdvisementStatus() {
         return advisementStatus;
@@ -81,5 +95,16 @@ public class User {
 
     public void setAdvisementStatus(String advisementStatus) {
         this.advisementStatus = advisementStatus;
+    }
+    
+        private final static List<SelectItem> majors;
+    static
+    {
+        majors = new ArrayList<>();
+        majors.add(new SelectItem("6100 - Computer Science"));
+        majors.add(new SelectItem("6101 - Computer Science - Applied"));
+        majors.add(new SelectItem("6102 - Computer Science - Information Science"));
+        majors.add(new SelectItem("6110 - Software Engineering"));
+        majors.add(new SelectItem("6660 - Applied Mathematics & Computer Science"));
     }
 }
