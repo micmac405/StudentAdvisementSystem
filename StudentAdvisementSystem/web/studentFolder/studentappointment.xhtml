@@ -60,9 +60,12 @@
                         </li>
                     </ul>
                 </div>
-                <h:form>
+                <h:form id="scheduleForm">
                     <div class="col-md-10 container-fluid main">
-                        <h3 style="margin-top: 0">Appointment: Need to schedule</h3>
+                        <!--<p:outputLabel class="h3 margin-top: 0" id="eventStatus" value="Appointment: #{userBean.advisementStatus}"/>-->
+                        <h:panelGroup id="eventStatus" >
+                        <p:outputLabel class="h3 margin-top: 0" value="Appointment: #{userBean.advisementStatus}"/>
+                        </h:panelGroup>
                         <p:growl id="messages" showDetail="true" />
                         <p:schedule id="schedule" value="#{studentScheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT-5"
                                     draggable="false" resizable="false" slotMinutes="10" tooltip="true">

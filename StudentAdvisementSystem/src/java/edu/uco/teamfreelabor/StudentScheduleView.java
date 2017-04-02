@@ -1,19 +1,30 @@
 package edu.uco.teamfreelabor;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Qualifier;
+import javax.sql.DataSource;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -24,34 +35,121 @@ import org.primefaces.model.ScheduleModel;
 @SessionScoped
 public class StudentScheduleView implements Serializable {
 
+    @Resource(name = "jdbc/ds_wsp")
+    private DataSource ds;
+
+    @Inject
+    private UserBean userBean;
+
     private ScheduleModel eventModel;
     private DefaultScheduleEvent event = new DefaultScheduleEvent();
+    private String status;
 
     @PostConstruct
     public void init() {
+
         eventModel = new DefaultScheduleModel();
+
+        System.out.println("Status from userbean ************" + userBean.getAdvisementStatus());
+        updateStatusLabel();
         
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
-        eventModel.addEvent(new DefaultScheduleEvent("Advisement", new Date(), new Date()));
+        try {
+            readAppointments();
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //Load the advisement status
+    private void updateStatusLabel() {
+        userBean.setAdvisementStatus(currentEventDetails());
+        RequestContext.getCurrentInstance().update("scheduleForm:eventStatus");
+    }
+
+    //Update student status in database
+    private void updateStatus() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            //Update the students status to the appointment day and time
+            PreparedStatement as = conn.prepareStatement(
+                    "UPDATE usertable SET ADVISEMENT_STATUS = '"
+                    + currentEventDetails() + "' WHERE USERNAME = '"
+                    + userBean.getUsername() + "'"
+            );
+
+            //Update the event to include the student id
+            PreparedStatement us = conn.prepareStatement(
+                    "UPDATE appointmenttable SET STUDENT_ID = "
+                    + userBean.getId() + ", BOOKED = 1 WHERE ID = "
+                    + "(select id from eventtable where USERNAME = " + event + ")"
+            );
+
+//            us.executeUpdate();
+            as.executeUpdate();
+            
+            updateStatusLabel();
+        } finally {
+            conn.close();
+        }
+    }
+
+    private void readAppointments() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0"
+            );
+
+            // Get book data from database
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                DefaultScheduleEvent e = new DefaultScheduleEvent();
+                eventModel.addEvent(e);
+
+                //Set values after adding to event model id will be changed
+                e.setId(String.valueOf(result.getInt("ID")));
+                e.setTitle("Appointment");
+                e.setStartDate(result.getTimestamp("APPOINTMENT_TIME"));
+                e.setEndDate(result.getTimestamp("APPOINTMENT_TIME"));
+                e.setData(result.getInt("EVENT_ID"));
+            }
+
+        } finally {
+            conn.close();
+        }
     }
 
     public void removeEvent(ActionEvent actionEvent) {
         System.out.println("****************** remove event ***************");
-//        eventModel.deleteEvent(event);
-//        event = new DefaultScheduleEvent();
+
     }
-    
-    public String currentEventDetails(){
+
+    public String currentEventDetails() {
         Date startDate = event.getStartDate();
-        
-        if(startDate != null){
-            return  new SimpleDateFormat("EEEE, d MMMM hh:mm aaa ").format(event.getStartDate());
+
+        if (startDate != null) {
+            return new SimpleDateFormat("EEEE, d MMMM hh:mm aaa ").format(event.getStartDate());
         }
-        
+
         return "";
     }
 
@@ -82,38 +180,17 @@ public class StudentScheduleView implements Serializable {
     }
 
     public void addEvent(ActionEvent actionEvent) {
-//        if (event.getId() == null) {
-//            //Only one appointment for a student clear out old appointments
-//            eventModel.clear();
-//            event.setTitle("Appointment");
-//            event.setStartDate(appointmentDate);
-//            eventModel.addEvent(event);
-//        } else {
-//            eventModel.updateEvent(event);
-//        }
-//        event = new DefaultScheduleEvent();
-        System.out.println("**************** selected an event and save **************");
+        try {
+//            readAppointments();
+            updateStatus();
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
         event = (DefaultScheduleEvent) selectEvent.getObject();
     }
-
-//    public void onDateSelect(SelectEvent selectEvent) {
-//        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-//    }
-//
-//    public void onEventMove(ScheduleEntryMoveEvent event) {
-//        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-//
-//        addMessage(message);
-//    }
-//
-//    public void onEventResize(ScheduleEntryResizeEvent event) {
-//        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event resized", "Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
-//
-//        addMessage(message);
-//    }
 
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);

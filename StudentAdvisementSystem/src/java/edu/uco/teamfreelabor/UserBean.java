@@ -25,8 +25,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-
-
 @Named(value = "userBean")
 @SessionScoped
 public class UserBean implements Serializable {
@@ -38,13 +36,12 @@ public class UserBean implements Serializable {
     @Resource(name = "mail/WSP")
     private Session session;
     
-
     private String groups;
 
     private String phoneNumber;
     private String firstName;
     private String lastName;
-    private String id;
+    private String id; //change to ucoID after sprint
     private String major;
     private String advisementStatus;
 
@@ -216,7 +213,6 @@ public class UserBean implements Serializable {
         }        
         return "/login";
     }
-    
 
   public BufferedImage getProfilePhoto() {
         return profilePhoto;
