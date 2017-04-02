@@ -86,15 +86,11 @@
                                             
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
-                                            <h:selectOneMenu id ="major" class="form-control" value="#{userBean.major}">
+                                            <h:selectOneMenu id ="major" class="form-control" value="#{userBean.major}" style="height: 50px">
                                                 <f:selectItems value="#{userBean.majors}"/>
-                                            </h:selectOneMenu>
-                                            <h:message for="major" errorStyle="color: red"/>
-                                            
-                                            
-                                            <!--<h:inputText class="form-control" p:placeholder="Major" value="#{userBean.major}"/>-->
-                                                    
+                                            </h:selectOneMenu>        
                                         </div>
+                                            <h:message for="major" errorStyle="color: red"/>
                                         <br />
                                         <h:commandButton type="submit" class="btn btn-primary" value="Sign up!" action="#{userBean.insert}" />
                                         <br />
