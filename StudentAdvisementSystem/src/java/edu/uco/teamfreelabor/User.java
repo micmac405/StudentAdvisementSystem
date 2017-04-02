@@ -93,7 +93,6 @@ public class User {
     static
     {
         majors = new ArrayList<>();
-        majors.add(new SelectItem("-- choose one --"));
         majors.add(new SelectItem("6100 - Computer Science"));
         majors.add(new SelectItem("6101 - Computer Science - Applied"));
         majors.add(new SelectItem("6102 - Computer Science - Information Science"));

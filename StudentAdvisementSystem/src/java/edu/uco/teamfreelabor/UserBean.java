@@ -43,11 +43,6 @@ public class UserBean implements Serializable {
 
     private String groups;
 
-    //private String phoneNumber;
-    //private String firstName;
-    //private String lastName;
-    //private String id;
-    //private String major;
     private String advisementStatus;
 
     private BufferedImage profilePhoto;
@@ -68,8 +63,8 @@ public class UserBean implements Serializable {
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
     
-   // @NotNull(message = "Enter a phone number!")
-    @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Must be in phone number format!")
+    //@NotNull(message = "Enter a phone number!")
+    @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
     
     //@NotNull(message = "Enter your first name!")
@@ -81,10 +76,10 @@ public class UserBean implements Serializable {
     private String lastName;
     
     //@NotNull(message = "Enter your UCO ID!")
-    @Pattern(regexp = "[*]?\\d{8}", message = "Must be 8 digits!")
+    @Pattern(regexp = "[*]?\\d{8}", message = "UCO ID must be 8 digits!")
     private String id;
 
-    @Pattern(regexp = "^[^-]", message = "Must select a major!")
+    //@Pattern(regexp = "^6", message = "Must select a major!")
     private String major;
     
     private ArrayList<User> users;
