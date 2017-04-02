@@ -16,8 +16,8 @@ create table USERTABLE (
     FIRST_NAME varchar(40),
     LAST_NAME varchar(40),
     UCO_ID varchar(10),
-    MAJOR varchar(20),
-    ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
+    MAJOR varchar(45),
+    ADVISEMENT_STATUS varchar(20),
     PHONE_NUMBER varchar(13),
     primary key (id)
 );
@@ -79,7 +79,7 @@ insert into USERTABLE (username, password, email, first_name, last_name, uco_id,
     major, advisement_status, phone_number)
     values ('john@uco.edu',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'john@uco.edu', 'John', 'Grunt', '34565412', 'CS 6100', 'Not Selected',
+        'john@uco.edu', 'John', 'Grunt', '34565412', '6100 - Computer Science ', 'Pending',
         '405-555-1111');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 

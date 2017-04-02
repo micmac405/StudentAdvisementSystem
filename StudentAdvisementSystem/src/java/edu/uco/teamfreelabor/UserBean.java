@@ -13,15 +13,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -38,31 +38,43 @@ public class UserBean implements Serializable {
     
     private String groups;
 
-    private String phoneNumber;
-    private String firstName;
-    private String lastName;
-    private String id; //change to ucoID after sprint
-    private String major;
-    private String advisementStatus = "Not Selected";
+    private String advisementStatus;
 
     private BufferedImage profilePhoto;
 
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
     
-    //@NotNull(message = "Enter a Username!")
+
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
     private String username;
     
-    //@NotNull(message = "Enter a Password!")
+
     @Size(min = 3, message = "Password must be >= 3 characters!")
     private String password;
     
-    //@NotNull(message = "Enter an email!")
+
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
+    
 
+    @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
+    private String phoneNumber;
+    
+
+    private String firstName;
+    
+
+    private String lastName;
+    
+    
+    @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
+    private String id;
+
+
+    private String major;
+    
     private ArrayList<User> users;
 
 
@@ -292,6 +304,10 @@ public class UserBean implements Serializable {
     public void setMajor(String major) {
         this.major = major;
     }
+    
+    public List<SelectItem> getMajors() {
+        return User.majorList();
+    }
 
     public String getAdvisementStatus() {
         return advisementStatus;
@@ -330,6 +346,8 @@ public class UserBean implements Serializable {
     public ArrayList<User> getUsers(){
         return users;
     }
+    
+
     
     
     //start of master merge conflict
