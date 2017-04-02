@@ -95,7 +95,7 @@ insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values ((select id from eventtable where id = 1), '2017-03-31 07:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-03-30 08:50:00', 1);
+    values ((select id from eventtable where id = 1), '2017-03-30 08:50:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values ((select id from eventtable where id = 1), '2017-04-15 07:30:00', 0);
@@ -104,4 +104,4 @@ insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values ((select id from eventtable where id = 1), '2017-04-05 07:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-04-05 08:50:00', 1);
+    values ((select id from eventtable where id = 1), '2017-04-05 08:50:00', 0);

@@ -12,17 +12,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Qualifier;
 import javax.sql.DataSource;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -43,16 +38,11 @@ public class StudentScheduleView implements Serializable {
 
     private ScheduleModel eventModel;
     private DefaultScheduleEvent event = new DefaultScheduleEvent();
-    private String status;
 
     @PostConstruct
     public void init() {
-
         eventModel = new DefaultScheduleModel();
 
-        System.out.println("Status from userbean ************" + userBean.getAdvisementStatus());
-        updateStatusLabel();
-        
         try {
             readAppointments();
         } catch (SQLException ex) {
@@ -62,7 +52,6 @@ public class StudentScheduleView implements Serializable {
 
     //Load the advisement status
     private void updateStatusLabel() {
-        userBean.setAdvisementStatus(currentEventDetails());
         RequestContext.getCurrentInstance().update("scheduleForm:eventStatus");
     }
 
@@ -87,22 +76,30 @@ public class StudentScheduleView implements Serializable {
             );
 
             //Update the event to include the student id
+            //*************** need to change get id to be the id from usertable not UCO_ID
+            //*************** remove select statment and replace with userBean.getID() when its usertable id
             PreparedStatement us = conn.prepareStatement(
-                    "UPDATE appointmenttable SET STUDENT_ID = "
-                    + userBean.getId() + ", BOOKED = 1 WHERE ID = "
-                    + "(select id from eventtable where USERNAME = " + event + ")"
+                    "UPDATE appointmenttable SET STUDENT_ID = (select id from usertable WHERE USERNAME = '"
+                    + userBean.getUsername() + "'), BOOKED = 1 WHERE ID =  " + event.getId()
             );
 
-//            us.executeUpdate();
+            us.executeUpdate();
             as.executeUpdate();
-            
+
+            //Update userbean value to match the database
+            userBean.setAdvisementStatus(currentEventDetails());
             updateStatusLabel();
         } finally {
             conn.close();
         }
+        
+        readAppointments();
     }
 
     private void readAppointments() throws SQLException {
+        //Remove all appointments and reload
+        eventModel.clear();
+        
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -181,7 +178,6 @@ public class StudentScheduleView implements Serializable {
 
     public void addEvent(ActionEvent actionEvent) {
         try {
-//            readAppointments();
             updateStatus();
         } catch (SQLException ex) {
             Logger.getLogger(StudentScheduleView.class.getName()).log(Level.SEVERE, null, ex);
