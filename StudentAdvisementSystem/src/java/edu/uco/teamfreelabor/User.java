@@ -12,7 +12,7 @@ import javax.faces.model.SelectItem;
 public class User {
     private String username;
     private String groups;
-    
+    private String major;
     private String email;
     private String phoneNumber;
     private String firstName;
@@ -79,6 +79,14 @@ public class User {
     
     public static List<SelectItem> majorList() {
         return majors;
+    }
+    
+    public void setMajor(String m){
+        this.major = m;
+    }
+    
+    public String getMajor(){
+        return major;
     }
 
     public String getAdvisementStatus() {

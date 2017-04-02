@@ -22,8 +22,6 @@ import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -50,36 +48,34 @@ public class UserBean implements Serializable {
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
     
-    //@NotNull(message = "Enter a Username!")
+
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
     private String username;
     
-    //@NotNull(message = "Enter a Password!")
+
     @Size(min = 3, message = "Password must be >= 3 characters!")
     private String password;
     
-    //@NotNull(message = "Enter an email!")
+
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
     
-    //@NotNull(message = "Enter a phone number!")
+
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
     
-    //@NotNull(message = "Enter your first name!")
-    @Size(min = 1, message = "Enter your first name!")
+
     private String firstName;
     
-    //@NotNull(message = "Enter your last name!")
-    @Size(min = 1, message = "Enter your last name!")
+
     private String lastName;
     
-    //@NotNull(message = "Enter your UCO ID!")
-    @Pattern(regexp = "[*]?\\d{8}", message = "UCO ID must be 8 digits!")
+    
+    @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
 
-    //@Pattern(regexp = "^6", message = "Must select a major!")
+
     private String major;
     
     private ArrayList<User> users;
