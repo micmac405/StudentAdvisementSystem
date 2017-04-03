@@ -44,14 +44,10 @@ public class UserBean implements Serializable {
     
     private Session session;
     //private String groups; Dont think we need this
-    private String phoneNumber;
+ 
     private String firstName;
     private String lastName;
-    private String id;
-    private String major;
-
     private String advisementStatus;
-
     private BufferedImage profilePhoto;
 
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
@@ -72,19 +68,16 @@ public class UserBean implements Serializable {
     
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
-    
-
-    private String firstName;
-    
-
-    private String lastName;
-    
+   
     
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
 
 
     private String major;
+    
+    //String for code
+    private String code;
     
     private ArrayList<User> users;
 
@@ -213,11 +206,9 @@ public class UserBean implements Serializable {
             }
             System.out.print("user: " + email + "was not found in temp table! Complete function");
             
-            //Let's encrypt the pw
-            password = encrypt();
             
             //lets create random code for their email
-            String code = "";
+            code = "";
             for(int i = 0; i < 5; i++){
                 code += randomDigitString();
             }
@@ -240,8 +231,11 @@ public class UserBean implements Serializable {
             ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
             ps.setString(10, code);
+            major = major.trim();
+            System.out.print(major);
+            System.out.print("Got this far");
             ps.executeUpdate();
-            
+            System.out.print("If you see this it updated db");
             //email debugging to see if it gets this far
             System.out.print("Email about to send!");
             //code debugging
@@ -260,7 +254,7 @@ public class UserBean implements Serializable {
             conn.close();
         }        
         //going to return micah's page
-        return "";
+        return "/validation";
         
     }
     
@@ -280,29 +274,41 @@ public class UserBean implements Serializable {
         try{
             
             //first let me check to see whether the user is in the table already
-            PreparedStatement exist = conn.prepareStatement(
-                    "SELECT * FROM USERTABLE WHERE USERNAME = '" + username + "'"
+            PreparedStatement ps = conn.prepareStatement(
+                    "SELECT * FROM TEMPUSERTABLE WHERE code = '" + code + "'"
             );
             
-            ResultSet result = exist.executeQuery();
-            //if result set returns false then nothing was found in query
-            if(!result.next() == false)
-                return "";
+            ResultSet result = ps.executeQuery();
             
-            //Let's encrypt the pw
-            password = encrypt();
-            
-            //lets create random code for their email
-            String code = "";
-            for(int i = 0; i < 5; i++){
-                code += randomDigitString();
+            //If result.next() returns true then the code was found
+            if(result.next()) {
+                //result.next();
+                
+                //Let's get the userinfo
+                User u = new User();
+                firstName = (result.getString("FIRST_NAME"));
+                lastName = (result.getString("LAST_NAME"));
+                email = (result.getString("EMAIL"));
+                id = (result.getString("UCO_ID"));
+                phoneNumber = (result.getString("PHONE_NUMBER"));
+                major = (result.getString("MAJOR"));
+                advisementStatus = (result.getString("ADVISEMENT_STATUS"));
+                password = (result.getString("PASSWORD"));
+                password = encrypt();
+                
+//                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
+//                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
+            }
+            //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
+            else {
+                return "/validation";
             }
             
-            //Now we are ready to insert user into DB
+            //Insert into usertable
             String userTable = "insert into USERTABLE(username, password, email, first_name, last_name,"
                     + "uco_id, major, advisement_status, phone_number)"
                     + "values(?,?,?,?,?,?,?,?,?)";
-            PreparedStatement ps = conn.prepareStatement(userTable);
+            ps = conn.prepareStatement(userTable);
             //right now I am using email as username for temp purposes. I will eventually make a parsing function to get username = "username"@uco.edu
             ps.setString(1, email);
             ps.setString(2, password);
@@ -311,25 +317,19 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            ps.setString(8, advisementStatus); //Default will set the default value in sql -- How to use fem java ?
+            advisementStatus = "Need Advisement!";
+            //we dont have advisement status on register.xhtml right now so I am using a string literal
+            ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
+            
             ps.executeUpdate();
             
-            String groupTable = "insert into GROUPTABLE(groupname, username)"
-                    + "values(?,?)";
-            PreparedStatement ps2 = conn.prepareStatement(groupTable);
-            String customerGroup = "studentgroup";
-            ps2.setString(1, customerGroup);
-            //also temporarily using email as username
-            ps2.setString(2, email);
-            ps2.executeUpdate();
-            System.out.print("Email about to send!");
-            System.out.print(code);
-            Email sendEmail = new Email();
-            String message = "Thank you for registering an account with UCO advisement!"
-                    + "\n\nIn order to complete the registration process please enter your code"
-                    +" on the advisement website.\n\nHere is your code: ";
-            sendEmail.sendEmail(session, email,message + code);
+            //Insert into grouptable
+            String groupTable = "insert into GROUPTABLE(groupname, username) values(?,?)";
+            ps = conn.prepareStatement(groupTable);
+            ps.setString(1, "studentgroup");
+            ps.setString(2, email);
+            ps.executeUpdate();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -337,7 +337,7 @@ public class UserBean implements Serializable {
         finally{
             conn.close();
         }        
-        return "/validate";
+        return "/login";
     }
 
     //encrypt pw
@@ -349,10 +349,8 @@ public class UserBean implements Serializable {
         else {
             return null;
         }
-
-  public BufferedImage getProfilePhoto() {
-        return profilePhoto;
     }
+
     //create random digit and return as string
     public String randomDigitString(){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 10);
@@ -414,6 +412,10 @@ public class UserBean implements Serializable {
     public String getPassword(){return password;}
      
     public void setPassword(String p){this.password = p;}
+    
+    public String getCode(){ return "";}
+    
+    public void setCode(String c){ this.code = c; }
     
     public ArrayList<User> getUsers(){return users;}
     
