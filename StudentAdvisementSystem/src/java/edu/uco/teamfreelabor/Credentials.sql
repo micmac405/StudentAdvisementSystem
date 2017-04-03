@@ -10,9 +10,10 @@ create table USERTABLE (
     FIRST_NAME varchar(40),
     LAST_NAME varchar(40),
     UCO_ID varchar(10),
-    MAJOR varchar(60),
-    ADVISEMENT_STATUS varchar(45) DEFAULT 'Not Selected',    
+    MAJOR varchar(45),
+    ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
     PHONE_NUMBER varchar(13),
+
     primary key (id)
 );
 create table GROUPTABLE (
@@ -29,7 +30,7 @@ create table TEMPUSERTABLE (
     FIRST_NAME varchar(40),
     LAST_NAME varchar(40),
     UCO_ID varchar(10),
-    MAJOR varchar(60),
+    MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(20),
     PHONE_NUMBER varchar(13),
     code varchar(5),

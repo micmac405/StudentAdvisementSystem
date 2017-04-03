@@ -43,10 +43,12 @@ public class UserBean implements Serializable {
     //private BackgroundJobManager clearDB;
     
     private Session session;
+
     //private String groups; Dont think we need this
  
     private String firstName;
     private String lastName;
+
     private String advisementStatus;
     private BufferedImage profilePhoto;
 
@@ -407,7 +409,6 @@ public class UserBean implements Serializable {
     public String getAdvisementStatus() {return advisementStatus;}
 
     public void setAdvisementStatus(String advisementStatus) {this.advisementStatus = advisementStatus;}
-    
 
     public String getPassword(){return password;}
      
