@@ -303,6 +303,9 @@ public class UserBean implements Serializable {
             }
             //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
+                FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Code! Try again!", null);
+                FacesContext.getCurrentInstance().addMessage("validationform:code", facesMsg);
+                //System.out.print("INSIDE CODE ERROR");
                 return "/validation";
             }
             

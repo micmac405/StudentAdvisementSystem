@@ -49,13 +49,14 @@
                                 </div>
                                 <!--div for login/password and sign in btn -->
                                 <div class="form-bottom text-center">
-                                    <h:form role="form" class="validation-form">
+                                    <h:form role="form" class="validation-form" id="validationform">
                                         <div class="input-group margin-bottom-sm" >
                                             <span class="input-group-addon"><i class="fa fa-arrow-right fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Verification Code" value="#{userBean.code}" />
-                                           <!-- <h:message for="code" errorStyle="color:red"/> -->
-                                        </div><br />
-                                        
+                                            <h:inputText class="form-control" p:placeholder="Verification Code" value="#{userBean.code}" id="code"
+                                                         required="true" requiredMessage="Must input a code!" />
+                                        </div>
+                                        <h:message for="code" errorStyle="color:red"/>
+                                        <br />
                                         <br />
                                         <h:commandButton type="submit" class="btn btn-primary" value="Verify" action="#{userBean.insert}"/>
                                         <br />
