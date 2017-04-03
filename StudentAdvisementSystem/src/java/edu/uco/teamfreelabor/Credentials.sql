@@ -11,7 +11,9 @@ create table USERTABLE (
     LAST_NAME varchar(40),
     UCO_ID varchar(10),
     MAJOR varchar(45),
-    ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',    PHONE_NUMBER varchar(13),
+    ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
+    PHONE_NUMBER varchar(13),
+
     primary key (id)
 );
 create table GROUPTABLE (
