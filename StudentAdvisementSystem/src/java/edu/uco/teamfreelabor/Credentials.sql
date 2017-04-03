@@ -28,7 +28,7 @@ create table TEMPUSERTABLE (
     FIRST_NAME varchar(40),
     LAST_NAME varchar(40),
     UCO_ID varchar(10),
-    MAJOR varchar(20),
+    MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(20),
     PHONE_NUMBER varchar(13),
     code varchar(5),
