@@ -59,6 +59,21 @@ create table APPOINTMENTTABLE(
     foreign key (STUDENT_ID)
         references USERTABLE(ID)
 );
+
+CREATE TABLE COURSE(
+    COURSE_NUM VARCHAR2(8) PRIMARY KEY,
+    COURSE_NAME VARCHAR2(50)
+);
+
+CREATE TABLE PREREQ(
+    COURSE_NUM VARCHAR2(8),
+    PRE_REQ VARCHAR2(8),
+    
+    CONSTRAINT PRE_REQ_PK PRIMARY KEY (COURSE_NUM, PRE_REQ),
+    FOREIGN KEY (COURSE_NUM)    REFERENCES COURSE,
+    FOREIGN KEY (PRE_REQ)       REFERENCES COURSE
+);
+
 /*
     initial entries
     root (password='ppp'): advisorgroup,studentgroup
