@@ -2,6 +2,7 @@ package edu.uco.teamfreelabor;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -31,6 +32,7 @@ import javax.faces.application.FacesMessage;
 
 @Named(value = "userBean")
 @SessionScoped
+
 public class UserBean implements Serializable {
 
     @Resource(name = "jdbc/ds_wsp")
@@ -91,6 +93,39 @@ public class UserBean implements Serializable {
         if(fc.getExternalContext().getUserPrincipal() != null) {
         Principal p = fc.getExternalContext().getUserPrincipal();
         username = p.getName();
+        
+        
+        System.out.println("Determining userrole...");
+        System.out.println("user is in studentrole: " + fc.getExternalContext().isUserInRole("studentrole"));
+        
+        if(fc.getExternalContext().isUserInRole("studentrole")){
+            //redirect to student profile page
+            System.out.println("Inside is studentrole...");
+            try{
+                System.out.print("Entered try dispatch student...");
+                //fc.getExternalContext().dispatch("studentFolder/profile");
+                fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "/studentFolder/profile");
+            }
+            catch(Exception e){
+                System.out.print("Inside catch dispatch student...");
+                e.printStackTrace();
+            }
+        }
+        //System.out.println("user is in advisorrole" + fc.getExternalContext().isUserInRole("advisorrole"));
+        
+        else if (fc.getExternalContext().isUserInRole("advisorrole")){
+            //redirect to admin profile page
+            System.out.println("Inside is advisorrole...");
+            try{
+                fc.getExternalContext().dispatch("/advisorFolder/dbmanage");
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+            
+        }
+        
+        
     }
 
   //start of Student_Profile merge conflict
