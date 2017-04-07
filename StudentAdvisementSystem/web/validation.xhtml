@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:pt="http://java.sun.com/jsf/passthrough"
       xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
-        
+
     <h:head>
         <title>Validation</title>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -29,47 +29,47 @@
                         </div>
                     </div>
                     <div class="center-element">
-                    <!--div for login across page -->
-                    <div class="row" style="width: 45% ; margin: 0 auto;">
-                        <div class="center-element">
-                            <!--div for small login area -->
-                            <div class="form-box center-element">
-                                <!--div for Login header -->
-                                <div class="form-top" >
-                                    <div class="form-top-left text-left">
-                                        <h3> Verify email address</h3>
-                                        <p>An email with your verification code has been sent to</p>
-                                        <p> #{userBean.email}</p>
-                                        <p>Enter the code here:</p>
-                                    </div>
-                                    <div class="form-top-right">
-                                        <!--<img src="assets/images/CSLogo.png" alt=""/>-->
-                                        <i class="fa fa-check"></i>
-                                    </div>
-                                </div>
-                                <!--div for login/password and sign in btn -->
-                                <div class="form-bottom text-center">
-                                    <h:form role="form" class="validation-form" id="validationform">
-                                        <div class="input-group margin-bottom-sm" >
-                                            <span class="input-group-addon"><i class="fa fa-arrow-right fa-fw"></i></span>
-                                            <h:inputText class="form-control" p:placeholder="Verification Code" value="#{userBean.code}" id="code"
-                                                         required="true" requiredMessage="Must input a code!" />
+                        <!--div for login across page -->
+                        <div class="row" style="width: 45% ; margin: 0 auto;">
+                            <div class="center-element">
+                                <!--div for small login area -->
+                                <div class="form-box center-element">
+                                    <!--div for Login header -->
+                                    <div class="form-top" >
+                                        <div class="form-top-left text-left">
+                                            <h3> Verify email address</h3>
+                                            <p>An email with your verification code has been sent to</p>
+                                            <p> #{userBean.email}</p>
+                                            <p>Enter the code here:</p>
                                         </div>
-                                        <h:message for="code" errorStyle="color:red"/>
-                                        <br />
-                                        <br />
-                                        <h:commandButton type="submit" class="btn btn-primary" value="Verify" action="#{userBean.insert}"/>
-                                        <br />
-                                        <br />
-                                        <!--All ready Registered? <h:link value="Login here" outcome="/login" /><br />-->
-                                    </h:form>
+                                        <div class="form-top-right">
+                                            <!--<img src="assets/images/CSLogo.png" alt=""/>-->
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                    </div>
+                                    <!--div for login/password and sign in btn -->
+                                    <div class="form-bottom text-center">
+                                        <h:form role="form" class="validation-form" id="validationform">
+                                            <div class="input-group margin-bottom-sm" >
+                                                <span class="input-group-addon"><i class="fa fa-arrow-right fa-fw"></i></span>
+                                                <h:inputText class="form-control" p:placeholder="Verification Code" value="#{userBean.code}" id="code"
+                                                             required="true" requiredMessage="Must input a code!" />
+                                            </div>
+                                            <h:message for="code" errorStyle="color:red"/>
+                                            <br />
+                                            <br />
+                                            <h:commandButton type="submit" class="btn btn-primary" value="Verify" action="#{userBean.insert}"/>
+                                            <br />
+                                            <br />
+                                            <!--All ready Registered? <h:link value="Login here" outcome="/login" /><br />-->
+                                        </h:form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
-     </h:body>
+    </h:body>
 </html>
