@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+
+    </h:head>
+    <h:body>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>
+        </f:facet>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <!-- if the screen is too small show button dropdown -->
+                    <!--                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>-->
+                    <label class="navbar-brand" href="#">CS Advisement<br/></label>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <h:link value="Settings" outcome="/advisorFolder/advisorsettings" />
+                        </li>
+                        <li>
+                            <a href="#">Help</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right">
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li >
+                            <h:link value="Profile" outcome="/advisorFolder/profile" />
+                        </li>
+                        <li class="active">
+                            <a href="#">Appointment<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li>
+                            <h:link value="Logout" outcome="/logout" /> <br/>
+                        </li>
+                    </ul>
+                </div>
+                <h:form>
+                    <p:growl id="messages" showDetail="true" />
+
+                    <h:panelGrid columnClasses="value">
+                        <h3 style="margin-top: 50px">Appointments</h3>
+                        <p:schedule id="schedule" value="#{advisorScheduleView.eventModel}" draggable="false" 
+                                    resizable="false" slotMinutes="10" tooltip="true" widgetVar="myschedule" timeZone="GMT-5">
+
+                            <p:ajax event="dateSelect" listener="#{advisorScheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="eventSelect" listener="#{advisorScheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <!--<p:ajax event="eventMove" listener="#{advisorScheduleView.onEventMove}" update="messages" />-->
+                            <!--<p:ajax event="eventResize" listener="#{advisorScheduleView.onEventResize}" update="messages" />-->
+
+                        </p:schedule>
+                    </h:panelGrid>
+
+                    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+                        <h:panelGrid id="eventDetails" columns="2">
+                            <p:outputLabel for="title" value="Titles:" />
+                            <p:inputText id="title" value="#{advisorScheduleView.event.title}" required="true" />
+
+                            <p:outputLabel for="from" value="From:" />
+                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" stepMinute="10" timeZone="GMT-5" pattern="MM/dd/yyyy hh:mm a"/>
+                            
+                            <p:outputLabel for="to" value="To:" />
+                            <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" stepMinute="10" timeZone="GMT-5" pattern="MM/dd/yyyy hh:mm a"/>
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Cancel" oncomplete="PF('eventDialog').hide();"/>
+                                <p:commandButton id="addButton" value="Save" actionListener="#{advisorScheduleView.addEvent}" 
+                                                 oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                            </f:facet>
+                        </h:panelGrid>
+                    </p:dialog>    
+                </h:form>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <!--        <script src="assets/js/jquery.min.js"></script>
+                <script src="bootstrap/js/bootstrap.min.js"></script>
+                 IE10 viewport hack for Surface/desktop Windows 8 bug 
+                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
+        <!-- jQuery -->
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+
+        <!-- Minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </h:body>
+</html>
