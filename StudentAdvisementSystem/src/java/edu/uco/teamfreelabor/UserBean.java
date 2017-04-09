@@ -109,7 +109,7 @@ public class UserBean implements Serializable {
                     "SELECT * FROM USERTABLE WHERE USERNAME = '" + username + "'"
             );
 
-            // Get book data from database
+            // Get user data from database
             ResultSet result = ps.executeQuery();
 
             while (result.next()) {

@@ -17,6 +17,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import org.primefaces.event.SelectEvent;
@@ -32,9 +33,12 @@ public class AdvisorScheduleView implements Serializable {
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
 
-    
+    @Inject
+    private UserBean userBean;
+    private String userId;
+
     private static final int SLOT_TIME_AMOUNT = 10;
-    
+
     //To insert the date into SQL the date needs to be in this format
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -44,7 +48,38 @@ public class AdvisorScheduleView implements Serializable {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
+        
+        try {
+            getUserId();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
+    private void getUserId() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+//            select ID from USERTABLE where USERNAME = 'admin';
+
+            PreparedStatement ps = conn.prepareStatement("select ID from USERTABLE where USERNAME = '" 
+                    + userBean.getUsername() + "'");
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()){
+                userId = rs.getString("ID");
+            }
+        } finally {
+            conn.close();
+        }
     }
 
     private void makeAppointment() throws SQLException {
@@ -57,23 +92,23 @@ public class AdvisorScheduleView implements Serializable {
         if (conn == null) {
             throw new SQLException("conn is null; Can't get db connection");
         }
-//          insert into EVENTTABLE (advisor_id, start_date, end_date)
-//          values (1, '2017-04-5 012:30:00', '2017-04-6 14:00:00');
+
         try {
+            //Use calendars to change the times to make time slots from one event (appointment)
             Calendar start = Calendar.getInstance();
             start.setTime(event.getStartDate());
 
             Calendar end = (Calendar) start.clone();
             end.setTime(event.getEndDate());
 
-            //Insert the event
+            //Insert the event (appointment)
             PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (advisor_id, start_date, end_date)"
-                    + " values (1, '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')"); //values (12, '" + sdf.format(start.getTime()) + "'," + " '" + sdf.format(end.getTime()) + "')");
+                    + " values (" + userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
             ps.execute();
 
             //Get the last inserted id from this admin
             ResultSet rs = ps.executeQuery("select last_insert_id() as last_id from EVENTTABLE");
-            
+
             //Must check next before doing anything
             if (rs.next()) {
                 //Set the events id to match the database id
@@ -102,15 +137,16 @@ public class AdvisorScheduleView implements Serializable {
             Calendar end = (Calendar) start.clone();
             end.setTime(event.getEndDate());
 
-            PreparedStatement ps ;
+            PreparedStatement ps;
 
             //Make time slots from the date
             do {
                 //Insert the appointment into the table
+                //Must be in the loop or only the first value for start will be used
                 ps = conn.prepareStatement(
-                    "insert into APPOINTMENTTABLE (event_id, appointment_time, booked)"
-                            + " values(" + event.getId() + ", '" + sdf.format(start.getTime()) + "', 0)"
-            );
+                        "insert into APPOINTMENTTABLE (event_id, appointment_time, booked)"
+                        + " values(" + event.getId() + ", '" + sdf.format(start.getTime()) + "', 0)"
+                );
                 ps.execute();
                 //Make the start time go up by the slot time amount
                 start.set(Calendar.MINUTE, start.get(Calendar.MINUTE) + SLOT_TIME_AMOUNT);
@@ -131,6 +167,7 @@ public class AdvisorScheduleView implements Serializable {
         return eventModel;
     }
 
+    //Not sure if it is needed
     private Calendar today() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
@@ -158,7 +195,7 @@ public class AdvisorScheduleView implements Serializable {
             }
         } else {
 //            eventModel.updateEvent(event);
-            //Allow updating? Not shure on how to handle the database.
+            //Allow updating? Not shure on how to handle the database yet.
         }
 
         event = new DefaultScheduleEvent();
