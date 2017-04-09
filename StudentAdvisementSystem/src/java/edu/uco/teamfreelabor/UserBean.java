@@ -2,17 +2,21 @@ package edu.uco.teamfreelabor;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.security.Principal;
+import java.sql.Blob;
 import java.sql.Connection;
+import static java.sql.JDBCType.BLOB;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import static java.sql.Types.BLOB;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -27,12 +31,13 @@ import javax.validation.constraints.Size;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 
 
 @Named(value = "userBean")
 @SessionScoped
 public class UserBean implements Serializable {
-
+    
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
     
@@ -44,14 +49,13 @@ public class UserBean implements Serializable {
     
     private Session session;
 
-    //private String groups; Dont think we need this
+    private String fileId;
  
     private String firstName;
     private String lastName;
 
     private String advisementStatus;
-    private BufferedImage profilePhoto;
-
+    
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
     
@@ -91,10 +95,12 @@ public class UserBean implements Serializable {
         if(fc.getExternalContext().getUserPrincipal() != null) {
         Principal p = fc.getExternalContext().getUserPrincipal();
         username = p.getName();
+        
     }
 
   //start of Student_Profile merge conflict
         try {
+            
             loadUserInfo();
         } catch (SQLException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,7 +135,7 @@ public class UserBean implements Serializable {
                 phoneNumber = (result.getString("PHONE_NUMBER"));
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
-                
+                fileId = (result.getString("FILE_ID"));
 //                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
 //                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
@@ -323,9 +329,11 @@ public class UserBean implements Serializable {
             ps.setString(6, id);
             ps.setString(7, major);
             advisementStatus = "Need Advisement!";
+            //filedId = "1";
             //we dont have advisement status on register.xhtml right now so I am using a string literal
             ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
+            
             
             ps.executeUpdate();
             
@@ -363,9 +371,9 @@ public class UserBean implements Serializable {
     }
     
 
-    public BufferedImage getProfilePhoto() {return profilePhoto;}
+    //public BufferedImage getProfilePhoto() {return profilePhoto;}
 
-    public void setProfilePhoto(BufferedImage profilePhoto) {this.profilePhoto = profilePhoto;}
+    //public void setProfilePhoto(BufferedImage profilePhoto) {this.profilePhoto = profilePhoto;}
 
     public String getPhoneNumber() {return phoneNumber;}
 
@@ -420,6 +428,10 @@ public class UserBean implements Serializable {
     public String getCode(){ return "";}
     
     public void setCode(String c){ this.code = c; }
+    
+    public void setFiledId(String f){ this.fileId = f; }
+    
+    public String getFileId(){return fileId;}
     
     public ArrayList<User> getUsers(){return users;}
     

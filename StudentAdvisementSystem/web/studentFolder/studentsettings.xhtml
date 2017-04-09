@@ -68,6 +68,18 @@
                                 </div>
                             </div>
                         </h:form>
+                        <h:form id="uploadForm" enctype="multipart/form-data">
+                            <h:panelGrid columns="3">
+                                Upload File(max 10MB):
+                                <h:inputFile id="file" label="file" value="#{pictureBean.part}"
+                                    validator="#{pictureBean.validateFile}" />
+                                <h:message for="file" errorStyle="color: red" infoStyle="color: blue"/>
+                                Click to upload:
+                                <h:commandButton id="upload" action="#{pictureBean.uploadFile}"
+                                    value="upload file" />
+                                <h:message for="upload" errorStyle="color: red" infoStyle="color: blue" />
+                            </h:panelGrid>
+                        </h:form>
                     </div>
                 </div>
             </div>

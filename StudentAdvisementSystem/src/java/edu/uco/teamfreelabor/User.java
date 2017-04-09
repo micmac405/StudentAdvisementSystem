@@ -18,8 +18,9 @@ public class User {
     private String firstName;
     private String lastName;
     private String advisementStatus;
+    private String fileId;
     
-    private BufferedImage profilePhoto;
+    /*private BufferedImage profilePhoto;
 
     public BufferedImage getProfilePhoto() {
         return profilePhoto;
@@ -28,7 +29,7 @@ public class User {
     public void setProfilePhoto(BufferedImage profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
-
+*/
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -75,6 +76,14 @@ public class User {
     
     public String getEmail(){
         return email;
+    }
+    
+    public void setFileId(String f){
+        this.fileId = f;
+    }
+    
+    public String getFileId(){
+        return fileId;
     }
     
     public static List<SelectItem> majorList() {

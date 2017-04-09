@@ -67,7 +67,9 @@
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3 placeholder">
-                            <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
+                            <!--<h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
+                            <image src="ImageServlet?fileid=1&amp;inline=true"
+                                height="70" width="100" />
                             <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
