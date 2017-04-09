@@ -244,7 +244,36 @@ public class AdvisorScheduleView implements Serializable {
         if (event.getId() != null) {
             eventModel.deleteEvent(event);
 
-            //Remove from database too
+            try {
+                removeAppointments();
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    private void removeAppointments() throws SQLException{
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            //Remove all apointments
+            PreparedStatement ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+            + event.getId());
+            ps.execute();
+            
+            ps = conn.prepareStatement("delete from EVENTTABLE where ID = " + event.getId());
+            ps.execute();
+            
+        } finally {
+            
         }
     }
 
