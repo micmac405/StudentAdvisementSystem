@@ -1,21 +1,27 @@
 package edu.uco.teamfreelabor;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.sql.DataSource;
 
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
@@ -23,40 +29,96 @@ import org.primefaces.model.ScheduleModel;
 @ViewScoped
 public class AdvisorScheduleView implements Serializable {
 
+    @Resource(name = "jdbc/ds_wsp")
+    private DataSource ds;
+
+    
+    private static final int SLOT_TIME_AMOUNT = 10;
+    
+    //To insert the date into SQL the date needs to be in this format
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private ScheduleModel eventModel;
-
-    private ScheduleModel lazyEventModel;
-
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-//        eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
-//        eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
-//        eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-//        eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
-//
-//        lazyEventModel = new LazyScheduleModel() {
-//
-//            @Override
-//            public void loadEvents(Date start, Date end) {
-//                Date random = getRandomDate(start);
-//                addEvent(new DefaultScheduleEvent("Lazy Event 1", random, random));
-//
-//                random = getRandomDate(start);
-//                addEvent(new DefaultScheduleEvent("Lazy Event 2", random, random));
-//            }
-//        };
+
     }
 
-//    public Date getRandomDate(Date base) {
-//        Calendar date = Calendar.getInstance();
-//        date.setTime(base);
-//        date.add(Calendar.DATE, ((int) (Math.random() * 30)) + 1);    //set random day of month
-//
-//        return date.getTime();
-//    }
+    private void makeAppointment() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+//          insert into EVENTTABLE (advisor_id, start_date, end_date)
+//          values (1, '2017-04-5 012:30:00', '2017-04-6 14:00:00');
+        try {
+            Calendar start = Calendar.getInstance();
+            start.setTime(event.getStartDate());
+
+            Calendar end = (Calendar) start.clone();
+            end.setTime(event.getEndDate());
+
+            //Insert the event
+            PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (advisor_id, start_date, end_date)"
+                    + " values (1, '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')"); //values (12, '" + sdf.format(start.getTime()) + "'," + " '" + sdf.format(end.getTime()) + "')");
+            ps.execute();
+
+            //Get the last inserted id from this admin
+            ResultSet rs = ps.executeQuery("select last_insert_id() as last_id from EVENTTABLE");
+            
+            //Must check next before doing anything
+            if (rs.next()) {
+                //Set the events id to match the database id
+                event.setId(rs.getString("last_id"));
+            }
+        } finally {
+            conn.close();
+        }
+    }
+
+    private void makeTimeSlots() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            Calendar start = Calendar.getInstance();
+            start.setTime(event.getStartDate());
+
+            Calendar end = (Calendar) start.clone();
+            end.setTime(event.getEndDate());
+
+            PreparedStatement ps ;
+
+            //Make time slots from the date
+            do {
+                //Insert the appointment into the table
+                ps = conn.prepareStatement(
+                    "insert into APPOINTMENTTABLE (event_id, appointment_time, booked)"
+                            + " values(" + event.getId() + ", '" + sdf.format(start.getTime()) + "', 0)"
+            );
+                ps.execute();
+                //Make the start time go up by the slot time amount
+                start.set(Calendar.MINUTE, start.get(Calendar.MINUTE) + SLOT_TIME_AMOUNT);
+            } while (end.after(start));
+        } finally {
+            conn.close();
+        }
+    }
 
     public Date getInitialDate() {
         Calendar calendar = Calendar.getInstance();
@@ -69,86 +131,12 @@ public class AdvisorScheduleView implements Serializable {
         return eventModel;
     }
 
-    public ScheduleModel getLazyEventModel() {
-        return lazyEventModel;
-    }
-
     private Calendar today() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
 
         return calendar;
     }
-
-//    private Date previousDay8Pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-//        t.set(Calendar.HOUR, 8);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date previousDay11Pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-//        t.set(Calendar.HOUR, 11);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date today1Pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.HOUR, 1);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date theDayAfter3Pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) + 2);
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.HOUR, 3);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date today6Pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.HOUR, 6);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date nextDay9Am() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.AM);
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-//        t.set(Calendar.HOUR, 9);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date nextDay11Am() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.AM);
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-//        t.set(Calendar.HOUR, 11);
-//
-//        return t.getTime();
-//    }
-//
-//    private Date fourDaysLater3pm() {
-//        Calendar t = (Calendar) today().clone();
-//        t.set(Calendar.AM_PM, Calendar.PM);
-//        t.set(Calendar.DATE, t.get(Calendar.DATE) + 4);
-//        t.set(Calendar.HOUR, 3);
-//
-//        return t.getTime();
-//    }
 
     public ScheduleEvent getEvent() {
         return event;
@@ -161,10 +149,15 @@ public class AdvisorScheduleView implements Serializable {
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
             eventModel.addEvent(event);
-            
-            //Add to database
+
+            try {
+                makeAppointment();
+                makeTimeSlots();
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
-            eventModel.updateEvent(event);
+//            eventModel.updateEvent(event);
             //Allow updating? Not shure on how to handle the database.
         }
 
@@ -174,7 +167,7 @@ public class AdvisorScheduleView implements Serializable {
     public void deleteEvent() {
         if (event.getId() != null) {
             eventModel.deleteEvent(event);
-            
+
             //Remove from database too
         }
     }
