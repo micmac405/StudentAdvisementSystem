@@ -28,24 +28,21 @@ import java.util.concurrent.ThreadLocalRandom;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 
-
 @Named(value = "userBean")
 @SessionScoped
 public class UserBean implements Serializable {
 
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
-    
+
     //Resource for email already configured in glassfish
     @Resource(name = "mail/WSP")
-    
+
     //@EJB
     //private BackgroundJobManager clearDB;
-    
     private Session session;
 
     //private String groups; Dont think we need this
- 
     private String firstName;
     private String lastName;
 
@@ -54,50 +51,45 @@ public class UserBean implements Serializable {
 
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
-    
 
     @Size(min = 3, message = "Username  must be >= 3 characters!")
-    @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
+    @Pattern(regexp = "[a-zA-Z]*", message = "Must be characters only.")
     private String username;
-    
 
     @Size(min = 3, message = "Password must be >= 3 characters!")
     private String password;
-    
 
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
-    
+
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
-   
-    
+
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
 
-
     private String major;
-    
+
     //String for code
     private String code;
-    
-    private ArrayList<User> users;
 
+    private ArrayList<User> users;
 
     @PostConstruct
     @Transactional
     public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
-        if(fc.getExternalContext().getUserPrincipal() != null) {
-        Principal p = fc.getExternalContext().getUserPrincipal();
-        username = p.getName();
-    }
+        if (fc.getExternalContext().getUserPrincipal() != null) {
+            Principal p = fc.getExternalContext().getUserPrincipal();
+            username = p.getName();
+            
+            //Pull the user group and only load the needed info **********************
 
-  //start of Student_Profile merge conflict
-        try {
-            loadUserInfo();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                loadUserInfo(); //Change to loadStudentInfo *****************************
+            } catch (SQLException ex) {
+                Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -129,7 +121,7 @@ public class UserBean implements Serializable {
                 phoneNumber = (result.getString("PHONE_NUMBER"));
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
-                
+
 //                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
 //                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
@@ -177,45 +169,41 @@ public class UserBean implements Serializable {
 
         return "/studentFolder/profile";
     }
-    
+
     //insert user into tempdb
-    public String insertTemp() throws SQLException
-    {
-        if(ds == null)
-        {
+    public String insertTemp() throws SQLException {
+        if (ds == null) {
             throw new SQLException("Cannot get DataSource. Insert Failed!");
         }
-        
+
         Connection conn = ds.getConnection();
-        if(conn == null)
-        {
+        if (conn == null) {
             throw new SQLException("Cannot get Connection. Insert Failed!");
-        }        
-        try{
-           
+        }
+        try {
+
             //first let me check to see whether the user is in the table already
             PreparedStatement exist = conn.prepareStatement(
                     "SELECT * FROM TEMPUSERTABLE WHERE USERNAME = '" + email + "'"
             );
-            
+
             ResultSet result = exist.executeQuery();
             //if result set returns false then nothing was found in query
-            if(result.next() == true){
+            if (result.next() == true) {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Oops email is already taken! Contact Dr.Sung if error!", null);
                 FacesContext.getCurrentInstance().addMessage("registrationform:email", facesMsg);
                 System.out.print("Inside if statement. Found user in temp table!");
                 return "/registration";
             }
             System.out.print("user: " + email + "was not found in temp table! Complete function");
-            
-            
+
             //lets create random code for their email
             code = "";
-            for(int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
                 code += randomDigitString();
             }
-            
-              //Now we are ready to insert user into DB
+
+            //Now we are ready to insert user into DB
             String userTable = "insert into TEMPUSERTABLE(username, password, email, first_name, last_name,"
                     + "uco_id, major, advisement_status, phone_number, code)"
                     + "values(?,?,?,?,?,?,?,?,?,?)";
@@ -242,50 +230,45 @@ public class UserBean implements Serializable {
             System.out.print("Email about to send!");
             //code debugging
             System.out.print(code);
-            
+
             Email sendEmail = new Email();
             String message = "Thank you for registering an account with UCO advisement!"
                     + "\n\nIn order to complete the registration process please enter your code"
-                    +" on the advisement website.\n\nHere is your code: ";
-            sendEmail.sendEmail(session, email,message + code);
-        }
-        catch (Exception e){
+                    + " on the advisement website.\n\nHere is your code: ";
+            sendEmail.sendEmail(session, email, message + code);
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             conn.close();
-        }        
+        }
         //going to return micah's page
         return "/validation";
-        
+
     }
-    
+
     //insert into permanent db
-    public String insert() throws SQLException
-    {
-        if(ds == null)
-        {
+    public String insert() throws SQLException {
+        if (ds == null) {
             throw new SQLException("Cannot get DataSource. Insert Failed!");
         }
-        
+
         Connection conn = ds.getConnection();
-        if(conn == null)
-        {
+        if (conn == null) {
             throw new SQLException("Cannot get Connection. Insert Failed!");
-        }        
-        try{
-            
+        }
+        try {
+
             //first let me check to see whether the user is in the table already
             PreparedStatement ps = conn.prepareStatement(
                     "SELECT * FROM TEMPUSERTABLE WHERE code = '" + code + "'"
             );
-            
+
             ResultSet result = ps.executeQuery();
-            
+
             //If result.next() returns true then the code was found
-            if(result.next()) {
+            if (result.next()) {
                 //result.next();
-                
+
                 //Let's get the userinfo
                 User u = new User();
                 firstName = (result.getString("FIRST_NAME"));
@@ -297,18 +280,17 @@ public class UserBean implements Serializable {
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
                 password = (result.getString("PASSWORD"));
                 password = encrypt();
-                
+
 //                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
 //                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
-            }
-            //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
+            } //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Code! Try again!", null);
                 FacesContext.getCurrentInstance().addMessage("validationform:code", facesMsg);
                 //System.out.print("INSIDE CODE ERROR");
                 return "/validation";
             }
-            
+
             //Insert into usertable
             String userTable = "insert into USERTABLE(username, password, email, first_name, last_name,"
                     + "uco_id, major, advisement_status, phone_number)"
@@ -326,101 +308,151 @@ public class UserBean implements Serializable {
             //we dont have advisement status on register.xhtml right now so I am using a string literal
             ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
-            
+
             ps.executeUpdate();
-            
+
             //Insert into grouptable
             String groupTable = "insert into GROUPTABLE(groupname, username) values(?,?)";
             ps = conn.prepareStatement(groupTable);
             ps.setString(1, "studentgroup");
             ps.setString(2, email);
             ps.executeUpdate();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally{
+        } finally {
             conn.close();
-        }        
+        }
         return "/login";
     }
 
     //encrypt pw
-    public String encrypt(){
+    public String encrypt() {
         String s = SHA256Encrypt.encrypt(password);
-        if(s != null){
+        if (s != null) {
             return s;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
     //create random digit and return as string
-    public String randomDigitString(){
+    public String randomDigitString() {
         int randomNum = ThreadLocalRandom.current().nextInt(0, 10);
         return Integer.toString(randomNum);
     }
-    
 
-    public BufferedImage getProfilePhoto() {return profilePhoto;}
+    public BufferedImage getProfilePhoto() {
+        return profilePhoto;
+    }
 
-    public void setProfilePhoto(BufferedImage profilePhoto) {this.profilePhoto = profilePhoto;}
+    public void setProfilePhoto(BufferedImage profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
 
-    public String getPhoneNumber() {return phoneNumber;}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-    public String getFirstName() {return firstName;}
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public void setFirstName(String firstName) {this.firstName = firstName;}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public String getLastName() {return lastName;}
+    public String getLastName() {
+        return lastName;
+    }
 
-    public void setLastName(String lastName) {this.lastName = lastName;}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     //public void setGroups(String p) {this.groups = p;}
-    
     //public String getGroups() {return groups;}
+    public String getUsername() {
+        return username;
+    }
 
-    public String getUsername() {return username;}
-    
-    public void setUsername(String u){this.username = u;}
+    public void setUsername(String u) {
+        this.username = u;
+    }
 
-    public String getEmail() {return email;}
-    
-    public void setEmail(String e){this.email = e;}
+    public String getEmail() {
+        return email;
+    }
 
-    public ArrayList<UCOClass> getSelectedCourses() {return selectedCourses;}
+    public void setEmail(String e) {
+        this.email = e;
+    }
 
-    public void setSelectedCourses(ArrayList<UCOClass> selectedCourses) {this.selectedCourses = selectedCourses;}
+    public ArrayList<UCOClass> getSelectedCourses() {
+        return selectedCourses;
+    }
 
-    public ArrayList<UCOClass> getCourses() {return courses;}
+    public void setSelectedCourses(ArrayList<UCOClass> selectedCourses) {
+        this.selectedCourses = selectedCourses;
+    }
 
-    public void setCourses(ArrayList<UCOClass> courses) {this.courses = courses;}
+    public ArrayList<UCOClass> getCourses() {
+        return courses;
+    }
 
-    public String getId() {return id;}
+    public void setCourses(ArrayList<UCOClass> courses) {
+        this.courses = courses;
+    }
 
-    public void setId(String id) {this.id = id;}
+    public String getId() {
+        return id;
+    }
 
-    public String getMajor() {return major;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public void setMajor(String major) {this.major = major;}
-    
-    public List<SelectItem> getMajors() {return User.majorList();}
+    public String getMajor() {
+        return major;
+    }
 
-    public String getAdvisementStatus() {return advisementStatus;}
+    public void setMajor(String major) {
+        this.major = major;
+    }
 
-    public void setAdvisementStatus(String advisementStatus) {this.advisementStatus = advisementStatus;}
+    public List<SelectItem> getMajors() {
+        return User.majorList();
+    }
 
-    public String getPassword(){return password;}
-     
-    public void setPassword(String p){this.password = p;}
-    
-    public String getCode(){ return "";}
-    
-    public void setCode(String c){ this.code = c; }
-    
-    public ArrayList<User> getUsers(){return users;}
-    
+    public String getAdvisementStatus() {
+        return advisementStatus;
+    }
+
+    public void setAdvisementStatus(String advisementStatus) {
+        this.advisementStatus = advisementStatus;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String p) {
+        this.password = p;
+    }
+
+    public String getCode() {
+        return "";
+    }
+
+    public void setCode(String c) {
+        this.code = c;
+    }
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
 }
