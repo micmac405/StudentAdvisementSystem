@@ -48,11 +48,52 @@ public class AdvisorScheduleView implements Serializable {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-        
+                
         try {
             getUserId();
+            loadAdvisorEvents();
         } catch (SQLException ex) {
             Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void loadAdvisorEvents() throws SQLException{
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement("select * from EVENTTABLE where ADVISOR_ID = "
+            + userId);
+            
+            ResultSet rs = ps.executeQuery();
+            
+            ScheduleEvent readEvent;
+            
+            while(rs.next()){
+                readEvent = new DefaultScheduleEvent();
+                String readId = rs.getString("ID");
+                String title = rs.getString("TITLE");
+                Date startDate = rs.getDate("START_DATE");
+                Date endDate = rs.getDate("END_DATE");
+                
+                ((DefaultScheduleEvent) readEvent).setStartDate(startDate);
+                ((DefaultScheduleEvent) readEvent).setEndDate(endDate);
+                ((DefaultScheduleEvent) readEvent).setTitle(title);
+                eventModel.addEvent(readEvent);
+                
+                //Set the id after adding it to the eventModel or it will be over written
+                readEvent.setId(readId);
+            }
+            
+        } finally{
+            conn.close();
         }
     }
 
@@ -68,8 +109,6 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-//            select ID from USERTABLE where USERNAME = 'admin';
-
             PreparedStatement ps = conn.prepareStatement("select ID from USERTABLE where USERNAME = '" 
                     + userBean.getUsername() + "'");
             ResultSet rs = ps.executeQuery();
@@ -102,8 +141,8 @@ public class AdvisorScheduleView implements Serializable {
             end.setTime(event.getEndDate());
 
             //Insert the event (appointment)
-            PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (advisor_id, start_date, end_date)"
-                    + " values (" + userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
+            PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (title, advisor_id, start_date, end_date)"
+                    + " values ('" + event.getTitle() + "', "+ userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
             ps.execute();
 
             //Get the last inserted id from this admin

@@ -39,6 +39,7 @@ create table TEMPUSERTABLE (
 -- Store the advisor events they make from the calendar 
 create table EVENTTABLE(
     ID INT NOT NULL AUTO_INCREMENT,
+    TITLE VARCHAR(20),
     ADVISOR_ID INT NOT NULL,
     START_DATE DATETIME NOT NULL,
     END_DATE DATETIME NOT NULL,
@@ -87,20 +88,20 @@ insert into USERTABLE (username, password, email, first_name, last_name, uco_id,
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 
 -- Advisor makes on their schedule
-insert into EVENTTABLE (advisor_id, start_date, end_date)
-    values (2, '2017-03-31 07:30:00', '2017-03-31 08:00:00');
-insert into EVENTTABLE (advisor_id, start_date, end_date)
-    values (2, '2017-04-5 012:30:00', '2017-04-6 14:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Morning', 1, '2017-03-31 07:30:00', '2017-03-31 08:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Afternoon', 2, '2017-04-5 012:30:00', '2017-04-6 14:00:00');
 
 -- What the student will see on their schedule
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-03-31 07:30:00', 0);
+    values (1, '2017-03-31 07:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-03-31 07:40:00', 0);
+    values (1, '2017-03-31 07:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-03-31 07:50:00', 0);
+    values (1, '2017-03-31 07:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-03-30 08:50:00', 0);
+    values (1, '2017-03-30 08:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values (2, '2017-04-15 07:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
