@@ -1,7 +1,5 @@
 package edu.uco.teamfreelabor;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -19,36 +17,27 @@ import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.mail.Session;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.concurrent.ThreadLocalRandom;
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 
 @Named(value = "userBean")
 @SessionScoped
 public class UserBean implements Serializable {
-
+    
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
 
     //Resource for email already configured in glassfish
     @Resource(name = "mail/WSP")
-
-    //@EJB
-    //private BackgroundJobManager clearDB;
+    
     private Session session;
-
-    //private String groups; Dont think we need this
     private String firstName;
     private String lastName;
-
     private String advisementStatus;
-    private BufferedImage profilePhoto;
-
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
 
@@ -64,9 +53,11 @@ public class UserBean implements Serializable {
 
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
-
+    
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
+    private String userID;
+
 
     private String major;
 
@@ -79,6 +70,7 @@ public class UserBean implements Serializable {
     @Transactional
     public void init() {
         FacesContext fc = FacesContext.getCurrentInstance();
+
         if (fc.getExternalContext().getUserPrincipal() != null) {
             Principal p = fc.getExternalContext().getUserPrincipal();
             username = p.getName();
@@ -114,6 +106,7 @@ public class UserBean implements Serializable {
 
             while (result.next()) {
                 User u = new User();
+                userID = (result.getString("ID"));
                 firstName = (result.getString("FIRST_NAME"));
                 lastName = (result.getString("LAST_NAME"));
                 email = (result.getString("EMAIL"));
@@ -122,8 +115,6 @@ public class UserBean implements Serializable {
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
 
-//                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
-//                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
 
         } finally {
@@ -166,7 +157,6 @@ public class UserBean implements Serializable {
         } finally {
             conn.close();
         }
-
         return "/studentFolder/profile";
     }
 
@@ -243,7 +233,6 @@ public class UserBean implements Serializable {
         }
         //going to return micah's page
         return "/validation";
-
     }
 
     //insert into permanent db
@@ -266,8 +255,8 @@ public class UserBean implements Serializable {
             ResultSet result = ps.executeQuery();
 
             //If result.next() returns true then the code was found
-            if (result.next()) {
-                //result.next();
+
+            if(result.next()) {
 
                 //Let's get the userinfo
                 User u = new User();
@@ -280,10 +269,10 @@ public class UserBean implements Serializable {
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
                 password = (result.getString("PASSWORD"));
                 password = encrypt();
+                
+            }
+            //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
 
-//                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
-//                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
-            } //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Code! Try again!", null);
                 FacesContext.getCurrentInstance().addMessage("validationform:code", facesMsg);
@@ -305,6 +294,7 @@ public class UserBean implements Serializable {
             ps.setString(6, id);
             ps.setString(7, major);
             advisementStatus = "Need Advisement!";
+            //filedId = "1";
             //we dont have advisement status on register.xhtml right now so I am using a string literal
             ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
@@ -341,14 +331,6 @@ public class UserBean implements Serializable {
         return Integer.toString(randomNum);
     }
 
-    public BufferedImage getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(BufferedImage profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -372,6 +354,7 @@ public class UserBean implements Serializable {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
 
     //public void setGroups(String p) {this.groups = p;}
     //public String getGroups() {return groups;}

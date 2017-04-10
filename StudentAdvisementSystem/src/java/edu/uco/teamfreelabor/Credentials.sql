@@ -1,7 +1,7 @@
 /* create the following table
    in WSP database
 */
-DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE;
+DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE, FILESTORAGE;
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
     USERNAME varchar(255),
@@ -13,7 +13,6 @@ create table USERTABLE (
     MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
     PHONE_NUMBER varchar(13),
-
     primary key (id)
 );
 create table GROUPTABLE (
@@ -59,6 +58,16 @@ create table APPOINTMENTTABLE(
         references EVENTTABLE(ID),
     foreign key (STUDENT_ID)
         references USERTABLE(ID)
+);
+
+--Store Profile Pictures 
+create table FILESTORAGE (
+    FILE_ID INT NOT NULL,
+    FILE_NAME VARCHAR(255),
+    FILE_TYPE VARCHAR(255),
+    FILE_SIZE BIGINT,
+    FILE_CONTENTS BLOB,  /* binary data */
+    PRIMARY KEY (FILE_ID)
 );
 /*
     initial entries
