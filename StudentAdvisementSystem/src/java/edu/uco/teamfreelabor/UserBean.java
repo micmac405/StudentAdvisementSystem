@@ -438,4 +438,14 @@ public class UserBean implements Serializable {
         return users;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+    
+    
+
 }
