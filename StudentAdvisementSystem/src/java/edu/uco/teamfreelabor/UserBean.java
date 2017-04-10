@@ -1,37 +1,28 @@
 package edu.uco.teamfreelabor;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.security.Principal;
-import java.sql.Blob;
 import java.sql.Connection;
-import static java.sql.JDBCType.BLOB;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import static java.sql.Types.BLOB;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.mail.Session;
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.concurrent.ThreadLocalRandom;
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
 
 
 @Named(value = "userBean")
@@ -44,35 +35,26 @@ public class UserBean implements Serializable {
     //Resource for email already configured in glassfish
     @Resource(name = "mail/WSP")
     
-    //@EJB
-    //private BackgroundJobManager clearDB;
-    
     private Session session;
  
     private String firstName;
     private String lastName;
-
     private String advisementStatus;
-    
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
     
-
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp="[a-zA-Z]*", message = "Must be characters only.")
     private String username;
     
-
     @Size(min = 3, message = "Password must be >= 3 characters!")
     private String password;
     
-
     @Pattern(regexp = ".{2,}@uco\\.edu$", message = "Must be xx@uco.edu where x is any character!")
     private String email;
     
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
-   
     
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
@@ -92,10 +74,8 @@ public class UserBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         if(fc.getExternalContext().getUserPrincipal() != null) {
         Principal p = fc.getExternalContext().getUserPrincipal();
-        username = p.getName();
-        
+        username = p.getName();   
     }
-
         try {
             loadUserInfo();
         } catch (SQLException ex) {
@@ -133,9 +113,6 @@ public class UserBean implements Serializable {
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
                 System.out.println("This is Your USERID in INIT(): " + userID);
-                
-//                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
-//                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
 
         } finally {
@@ -178,7 +155,6 @@ public class UserBean implements Serializable {
         } finally {
             conn.close();
         }
-
         return "/studentFolder/profile";
     }
     
@@ -211,7 +187,6 @@ public class UserBean implements Serializable {
                 return "/registration";
             }
             System.out.print("user: " + email + "was not found in temp table! Complete function");
-            
             
             //lets create random code for their email
             code = "";
@@ -261,7 +236,6 @@ public class UserBean implements Serializable {
         }        
         //going to return micah's page
         return "/validation";
-        
     }
     
     //insert into permanent db
@@ -300,8 +274,6 @@ public class UserBean implements Serializable {
                 password = (result.getString("PASSWORD"));
                 password = encrypt();
                 
-//                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
-//                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
             //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
@@ -329,7 +301,6 @@ public class UserBean implements Serializable {
             //we dont have advisement status on register.xhtml right now so I am using a string literal
             ps.setString(8, advisementStatus);
             ps.setString(9, phoneNumber);
-            
             
             ps.executeUpdate();
             
@@ -367,10 +338,6 @@ public class UserBean implements Serializable {
     }
     
 
-    //public BufferedImage getProfilePhoto() {return profilePhoto;}
-
-    //public void setProfilePhoto(BufferedImage profilePhoto) {this.profilePhoto = profilePhoto;}
-
     public String getPhoneNumber() {return phoneNumber;}
 
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
@@ -382,10 +349,6 @@ public class UserBean implements Serializable {
     public String getLastName() {return lastName;}
 
     public void setLastName(String lastName) {this.lastName = lastName;}
-
-    //public void setGroups(String p) {this.groups = p;}
-    
-    //public String getGroups() {return groups;}
 
     public String getUsername() {return username;}
     

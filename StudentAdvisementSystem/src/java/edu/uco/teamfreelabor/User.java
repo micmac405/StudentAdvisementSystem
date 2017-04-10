@@ -10,6 +10,7 @@ import javax.faces.model.SelectItem;
  * @author teamfreelabor
  */
 public class User {
+
     private String username;
     private String groups;
     private String major;
@@ -18,19 +19,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String advisementStatus;
-    private String fileId;
     private String userID;
-    
-    /*private BufferedImage profilePhoto;
 
-    public BufferedImage getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public void setProfilePhoto(BufferedImage profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-*/
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -54,48 +44,40 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
-    public void setUsername(String u){
+
+    public void setUsername(String u) {
         this.username = u;
     }
-    
-    public void setGroups(String p){
+
+    public void setGroups(String p) {
         this.groups = p;
     }
-    
-    public void setEmail(String e){
+
+    public void setEmail(String e) {
         this.email = e;
     }
-    
-    public String getUsername(){
+
+    public String getUsername() {
         return username;
     }
-    
-    public String getGroups(){
+
+    public String getGroups() {
         return groups;
     }
-    
-    public String getEmail(){
+
+    public String getEmail() {
         return email;
     }
-    
-    public void setFileId(String f){
-        this.fileId = f;
-    }
-    
-    public String getFileId(){
-        return fileId;
-    }
-    
+
     public static List<SelectItem> majorList() {
         return majors;
     }
-    
-    public void setMajor(String m){
+
+    public void setMajor(String m) {
         this.major = m;
     }
-    
-    public String getMajor(){
+
+    public String getMajor() {
         return major;
     }
 
@@ -106,18 +88,18 @@ public class User {
     public void setAdvisementStatus(String advisementStatus) {
         this.advisementStatus = advisementStatus;
     }
-    
-    public String getUserID(){
+
+    public String getUserID() {
         return userID;
     }
-    
-    public void setUserID(String user){
+
+    public void setUserID(String user) {
         this.userID = user;
     }
-    
-        private final static List<SelectItem> majors;
-    static
-    {
+
+    private final static List<SelectItem> majors;
+
+    static {
         majors = new ArrayList<>();
         majors.add(new SelectItem("6100 - Computer Science"));
         majors.add(new SelectItem("6101 - Computer Science - Applied"));
