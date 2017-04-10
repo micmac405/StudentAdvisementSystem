@@ -80,8 +80,11 @@ public class AdvisorScheduleView implements Serializable {
                 readEvent = new DefaultScheduleEvent();
                 String readId = rs.getString("ID");
                 String title = rs.getString("TITLE");
-                Date startDate = rs.getDate("START_DATE");
-                Date endDate = rs.getDate("END_DATE");
+                Date startDate = rs.getTimestamp("START_DATE");
+                Date endDate = rs.getTimestamp("END_DATE");
+                
+                System.out.println("*********** Start date: " + startDate);
+                System.out.println("*********** End Date: " + endDate);
                 
                 ((DefaultScheduleEvent) readEvent).setStartDate(startDate);
                 ((DefaultScheduleEvent) readEvent).setEndDate(endDate);

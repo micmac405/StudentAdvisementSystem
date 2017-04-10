@@ -91,7 +91,7 @@ insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.e
 insert into EVENTTABLE (title, advisor_id, start_date, end_date)
     values ('Morning', 1, '2017-03-31 07:30:00', '2017-03-31 08:00:00');
 insert into EVENTTABLE (title, advisor_id, start_date, end_date)
-    values ('Afternoon', 2, '2017-04-5 012:30:00', '2017-04-6 14:00:00');
+    values ('Afternoon', 2, '2017-04-5 12:30:00', '2017-04-5 13:00:00');
 
 -- What the student will see on their schedule
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
@@ -103,10 +103,8 @@ insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values (1, '2017-03-30 08:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 07:30:00', 0);
+    values (2, '2017-04-15 12:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 07:40:00', 0);
+    values (2, '2017-04-15 12:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-05 07:50:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-05 08:50:00', 0);
+    values (2, '2017-04-05 12:50:00', 0);
