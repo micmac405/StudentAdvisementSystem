@@ -1,5 +1,5 @@
 
-DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE, PREREQ, COURSE;
+DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE,COMPLETED,COURSE;
 
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -8,7 +8,7 @@ create table USERTABLE (
     EMAIL varchar(255),
     FIRST_NAME varchar(40),
     LAST_NAME varchar(40),
-    UCO_ID varchar(10),
+    UCO_ID INT(8),
     MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
     PHONE_NUMBER varchar(13),
@@ -60,11 +60,10 @@ create table APPOINTMENTTABLE(
 );
 
 CREATE TABLE COURSE(
-    ID INT NOT NULL AUTO_INCREMENT,
     COURSE_TYPE VARCHAR(4),
     COURSE_NUM  VARCHAR(4),
     COURSE_NAME VARCHAR(52),
-    PRIMARY KEY(ID)
+    PRIMARY KEY(COURSE_TYPE, COURSE_NUM)
 );
 
 /*CREATE TABLE PREREQ(
@@ -76,6 +75,17 @@ CREATE TABLE COURSE(
     FOREIGN KEY (PRE_REQ)       REFERENCES COURSE
 );*/
 
+
+CREATE TABLE COMPLETED(
+    STUDENT_ID INT(8),
+    COURSE_TYPE VARCHAR(4),
+    COURSE_NUM VARCHAR(4),
+
+    FOREIGN KEY STUDENT_FK (STUDENT_ID)
+        REFERENCES USERTABLE(ID),
+    FOREIGN KEY COURSE_FK (COURSE_TYPE, COURSE_NUM)
+        REFERENCES COURSE(COURSE_TYPE, COURSE_NUM)
+);
 /*
     initial entries
     root (password='ppp'): advisorgroup,studentgroup
@@ -86,20 +96,20 @@ insert into USERTABLE (username, password, email, first_name, last_name, uco_id,
     major, advisement_status, phone_number)
     values ('root',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'root@uco.edu', 'Amy', 'Handcock', '43456712', '', '', '405-555-3456');
+        'root@uco.edu', 'Amy', 'Handcock', 43456712, '', '', '405-555-3456');
 insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'root');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'root');
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
     major, advisement_status, phone_number)
     values ('admin',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'admin@uco.edu', '', '', '', '', '', '');
+        'admin@uco.edu', '', '', 99999999, '', '', '');
 insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'admin');
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
     major, advisement_status, phone_number)
     values ('john@uco.edu',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'john@uco.edu', 'John', 'Grunt', '34565412', '6100 - Computer Science ', default,
+        'john@uco.edu', 'John', 'Grunt', 34565412, '6100 - Computer Science ', default,
         '405-555-1111');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 insert into EVENTTABLE (advisor_id, start_date, end_date)
@@ -302,3 +312,10 @@ VALUES ('STAT','2103','Introduction to Statistics for Sciences');
 
 INSERT INTO COURSE (COURSE_TYPE, COURSE_NUM, COURSE_NAME)
 VALUES ('STAT','4113','Mathematical Statistics I');
+
+
+/*********************************************************************************************************
+INSERT COMPLETED
+*********************************************************************************************************/
+INSERT INTO COMPLETED (STUDENT_ID, COURSE_TYPE, COURSE_NUM)
+VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'STAT', '2103');
