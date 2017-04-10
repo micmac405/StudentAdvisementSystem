@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
-                        <div class="col-xs-6 col-sm-3 placeholder">
+                        <div class="col-xs-6 col-sm-3">
                             <!--<h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:graphicImage value="/ImageServlet?fileid=#{userBean.userID}&amp;inline=true"
                                 height="70" width="100" />
@@ -89,7 +89,7 @@
                     </div>
                     <h2 class="sub-header">Selected Courses</h2>
                     <div class="table-responsive">
-                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
+                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped text-left">
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
                                 <h:outputLabel value="#{class.type}" />
@@ -104,9 +104,9 @@
                             </h:column>
                         </h:dataTable>
                     </div>
-                    <h2 class="sub-header">Courses</h2>
+                    <h2 class="sub-header">Completed Courses</h2>
                     <div class="table-responsive">
-                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped">
+                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped text-left">
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
                                 <h:outputLabel value="#{class.type}" />

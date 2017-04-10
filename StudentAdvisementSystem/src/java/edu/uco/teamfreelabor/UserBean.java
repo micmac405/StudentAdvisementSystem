@@ -1,5 +1,4 @@
 package edu.uco.teamfreelabor;
-
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -26,6 +25,7 @@ import javax.faces.application.FacesMessage;
 
 @Named(value = "userBean")
 @SessionScoped
+
 public class UserBean implements Serializable {
     
     @Resource(name = "jdbc/ds_wsp")

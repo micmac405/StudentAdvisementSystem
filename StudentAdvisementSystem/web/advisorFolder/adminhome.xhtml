@@ -1,19 +1,141 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
     <h:head>
-        <title>admin home</title>
-    </h:head>
+<!--            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> -->
+<!--            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>-->
+            
+            <title>Advisor Profile</title>
+    </h:head> 
     <h:body>
-        <h2 style="color: blue">Admin Home Page</h2>
-        <br />
-        <h2>Hello! #{facesContext.externalContext.userPrincipal.name}</h2>
-        <h2>Hi! #{userBean.username}</h2>
-        <br />
-        <h:link value="Go MyAmazon Home" outcome="/index" /><br />
-        <h:link value="manage database" outcome="/advisorFolder/dbmanage" /><br />
-        <h:link value="Logout" outcome="/logout" />
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/form-elements.css"/>
+        
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <!-- if the screen is too small show button dropdown -->
+                    <!--                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>-->
+                    <label class="navbar-brand" href="#">CS Advisement<br/></label>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <h:link value="Settings" outcome="/advisorFolder/advisorsettings" />
+                        </li>
+                        <li>
+                            <a href="#">Help</a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-right">
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li class="active">
+                            <a href="#">Profile<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li>
+                            <h:link value="Appointments" outcome="/advisorFolder/advisorappointments" />
+                        </li>
+                        <li>
+                            <h:link value="Students" outcome="/advisorFolder/advisorstudents" /> <br/>
+                        </li>
+                        <li>
+                            <h:link value="Logout" outcome="/logout" /> <br/>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <div class="row placeholders">
+                        <div class="col-xs-6 col-sm-3">
+                            <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
+                            <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
+                            <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
+                        </div>
+                        <div class="col-xs-6 col-sm-3 placeholder">
+                            <div class="row">
+                                <br />
+                                <br />
+                                <h4>Your next advisement appointment is on <strong>{DATE}</strong> at 
+                                    <strong>{TIME}</strong> with <strong>{STUDENT NAME}</strong></h4>
+                                <h4></h4> <!-- Change to output label -->
+
+                                <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
+                            </div>
+                        </div>
+                        <div class="clear-columns clearfix visible-xs-block"></div>
+                    </div>
+                    <!--<h2 class="sub-header">Selected Courses</h2>
+                    <div class="table-responsive">
+                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
+                            <h:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputLabel value="#{class.type}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Number</f:facet>
+                                <h:outputLabel value="#{class.number}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Title</f:facet>
+                                <h:outputLabel value="#{class.title}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                    <h2 class="sub-header">Courses</h2>
+                    <div class="table-responsive">
+                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped">
+                            <h:column>
+                                <f:facet name="header">Type</f:facet>
+                                <h:outputLabel value="#{class.type}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Number</f:facet>
+                                <h:outputLabel value="#{class.number}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Title</f:facet>
+                                <h:outputLabel value="#{class.title}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <!--        <script src="assets/js/jquery.min.js"></script>
+                <script src="bootstrap/js/bootstrap.min.js"></script>
+                 IE10 viewport hack for Surface/desktop Windows 8 bug 
+                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
+        <!-- jQuery -->
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
+
+        <!-- Minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </h:body>
 </html>
 
