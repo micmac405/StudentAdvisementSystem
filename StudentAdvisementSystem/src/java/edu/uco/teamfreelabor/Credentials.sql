@@ -1,5 +1,6 @@
 
-DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE,COMPLETED,COURSE;
+
+DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, USERTABLE, GROUPTABLE, TEMPUSERTABLE, COMPLETED, COURSE, FILESTORAGE;
 
 create table USERTABLE (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -12,7 +13,6 @@ create table USERTABLE (
     MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
     PHONE_NUMBER varchar(13),
-
     primary key (id)
 );
 create table GROUPTABLE (
@@ -38,6 +38,7 @@ create table TEMPUSERTABLE (
 -- Store the advisor events they make from the calendar 
 create table EVENTTABLE(
     ID INT NOT NULL AUTO_INCREMENT,
+    TITLE VARCHAR(20),
     ADVISOR_ID INT NOT NULL,
     START_DATE DATETIME NOT NULL,
     END_DATE DATETIME NOT NULL,
@@ -45,7 +46,7 @@ create table EVENTTABLE(
     foreign key (ADVISOR_ID)
         references USERTABLE(ID)
 );
--- Store the appoints that are made from an event
+-- Store the appoints that are made from an event the advisor makes
 create table APPOINTMENTTABLE(
     ID INT NOT NULL AUTO_INCREMENT,
     EVENT_ID INT NOT NULL,
@@ -58,6 +59,7 @@ create table APPOINTMENTTABLE(
     foreign key (STUDENT_ID)
         references USERTABLE(ID)
 );
+
 
 CREATE TABLE COURSE(
     COURSE_TYPE VARCHAR(4),
@@ -85,6 +87,16 @@ CREATE TABLE COMPLETED(
         REFERENCES USERTABLE(ID),
     FOREIGN KEY COURSE_FK (COURSE_TYPE, COURSE_NUM)
         REFERENCES COURSE(COURSE_TYPE, COURSE_NUM)
+
+--Store Profile Pictures 
+create table FILESTORAGE (
+    FILE_ID INT NOT NULL,
+    FILE_NAME VARCHAR(255),
+    FILE_TYPE VARCHAR(255),
+    FILE_SIZE BIGINT,
+    FILE_CONTENTS BLOB,  /* binary data */
+    PRIMARY KEY (FILE_ID)
+
 );
 /*
     initial entries
@@ -112,24 +124,26 @@ insert into USERTABLE (username, password, email, first_name, last_name, uco_id,
         'john@uco.edu', 'John', 'Grunt', 34565412, '6100 - Computer Science ', default,
         '405-555-1111');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
-insert into EVENTTABLE (advisor_id, start_date, end_date)
-    values ((select id from usertable where id = 1), '2017-03-31 07:30:00', '2017-03-31 08:00:00');
-insert into EVENTTABLE (advisor_id, start_date, end_date)
-    values ((select id from usertable where id = 1), '2017-04-5 012:30:00', '2017-04-6 14:00:00');
+
+-- Advisor makes on their schedule
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Morning', 1, '2017-03-31 07:30:00', '2017-03-31 08:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Afternoon', 2, '2017-04-5 12:30:00', '2017-04-5 13:00:00');
+
+-- What the student will see on their schedule
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-03-31 07:30:00', 0);
+    values (1, '2017-03-31 07:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-03-31 07:40:00', 0);
+    values (1, '2017-03-31 07:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-03-31 07:50:00', 0);
+    values (1, '2017-03-31 07:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-03-30 08:50:00', 0);
+    values (1, '2017-03-30 08:50:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-04-15 07:30:00', 0);
+    values (2, '2017-04-15 12:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-04-15 07:40:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-04-05 07:50:00', 0);
+    values (2, '2017-04-15 12:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values ((select id from eventtable where id = 1), '2017-04-05 08:50:00', 0);
 
@@ -325,3 +339,4 @@ VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1513');
 
 INSERT INTO COMPLETED (STUDENT_ID, COURSE_TYPE, COURSE_NUM)
 VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1613');
+

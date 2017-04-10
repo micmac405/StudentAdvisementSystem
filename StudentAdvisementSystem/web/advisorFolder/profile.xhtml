@@ -12,9 +12,7 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> -->
 <!--            <h:outputStylesheet name="css/style.css"/>
             <h:outputStylesheet name="css/form-elements.css"/>-->
-            <f:metadata>
-                <f:event type="preRenderView" listener="#{userBean.init}"/>
-            </f:metadata>
+            
             <title>Profile</title>
     </h:head> 
     <h:body>
@@ -40,7 +38,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <h:link value="Settings" outcome="/studentFolder/studentsettings" />
+                            <h:link value="Settings" outcome="/advisorFolder/advisorsettings" />
                         </li>
                         <li>
                             <a href="#">Help</a>
@@ -59,7 +57,7 @@
                             <a href="#">Profile<span class="sr-only">(current)</span></a>
                         </li>
                         <li>
-                            <h:link value="Appointment" outcome="/studentFolder/studentappointment" />
+                            <h:link value="Appointment" outcome="/advisorFolder/advisorAppointment" />
                         </li>
                         <li>
                             <h:link value="Logout" outcome="/logout" /> <br/>
@@ -68,28 +66,26 @@
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
-                        <div class="col-xs-6 col-sm-3">
-                            <!--<h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
-                            <h:graphicImage value="/ImageServlet?fileid=#{userBean.userID}&amp;inline=true"
-                                height="70" width="100" />
+                        <div class="col-xs-6 col-sm-3 placeholder">
+                            <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
                             <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <div class="row">
-                                <br />
+<!--                                <br />
                                 <br />
                                 <h3>Advisement Status</h3>
-                                <h4>#{userBean.advisementStatus}</h4> <!-- Change to output label -->
+                                <h4>#{userBean.advisementStatus}</h4>  Change to output label -->
 
                                 <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
                             </div>
                         </div>
                         <div class="clear-columns clearfix visible-xs-block"></div>
                     </div>
-                    <h2 class="sub-header">Selected Courses</h2>
+<!--                    <h2 class="sub-header">Selected Courses</h2>
                     <div class="table-responsive">
-                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped text-left">
+                        <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
                                 <h:outputLabel value="#{class.type}" />
@@ -104,9 +100,9 @@
                             </h:column>
                         </h:dataTable>
                     </div>
-                    <h2 class="sub-header">Completed Courses</h2>
+                    <h2 class="sub-header">Courses</h2>
                     <div class="table-responsive">
-                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped text-left">
+                        <h:dataTable value="#{userBean.courses}" var="class" class="table table-striped">
                             <h:column>
                                 <f:facet name="header">Type</f:facet>
                                 <h:outputLabel value="#{class.type}" />
@@ -120,7 +116,7 @@
                                 <h:outputLabel value="#{class.title}"/>
                             </h:column>
                         </h:dataTable>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

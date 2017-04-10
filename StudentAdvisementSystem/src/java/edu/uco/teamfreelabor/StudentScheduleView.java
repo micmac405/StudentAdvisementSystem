@@ -115,14 +115,14 @@ public class StudentScheduleView implements Serializable {
                     "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0"
             );
 
-            // Get book data from database
+            // Get non-booked appointments from database
             ResultSet result = ps.executeQuery();
 
             while (result.next()) {
                 DefaultScheduleEvent e = new DefaultScheduleEvent();
                 eventModel.addEvent(e);
 
-                //Set values after adding to event model id will be changed
+                //Set values after adding to event model or id will be changed by the system
                 e.setId(String.valueOf(result.getInt("ID")));
                 e.setTitle("Appointment");
                 e.setStartDate(result.getTimestamp("APPOINTMENT_TIME"));
