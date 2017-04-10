@@ -48,8 +48,6 @@ public class UserBean implements Serializable {
     //private BackgroundJobManager clearDB;
     
     private Session session;
-
-    private String fileId;
  
     private String firstName;
     private String lastName;
@@ -78,7 +76,7 @@ public class UserBean implements Serializable {
     
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
-
+    private String userID;
 
     private String major;
     
@@ -98,9 +96,7 @@ public class UserBean implements Serializable {
         
     }
 
-  //start of Student_Profile merge conflict
         try {
-            
             loadUserInfo();
         } catch (SQLException ex) {
             Logger.getLogger(UserBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -128,6 +124,7 @@ public class UserBean implements Serializable {
 
             while (result.next()) {
                 User u = new User();
+                userID = (result.getString("ID"));
                 firstName = (result.getString("FIRST_NAME"));
                 lastName = (result.getString("LAST_NAME"));
                 email = (result.getString("EMAIL"));
@@ -135,7 +132,8 @@ public class UserBean implements Serializable {
                 phoneNumber = (result.getString("PHONE_NUMBER"));
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
-                fileId = (result.getString("FILE_ID"));
+                System.out.println("This is Your USERID in INIT(): " + userID);
+                
 //                Blob imageBlob = resultSet.getBlob(yourBlobColumnIndex);
 //                InputStream binaryStream = imageBlob.getBinaryStream(0, imageBlob.length());
             }
@@ -290,8 +288,6 @@ public class UserBean implements Serializable {
             
             //If result.next() returns true then the code was found
             if(result.next()) {
-                //result.next();
-                
                 //Let's get the userinfo
                 User u = new User();
                 firstName = (result.getString("FIRST_NAME"));
@@ -429,9 +425,9 @@ public class UserBean implements Serializable {
     
     public void setCode(String c){ this.code = c; }
     
-    public void setFiledId(String f){ this.fileId = f; }
+    public void setUserID(String u){ this.userID = u; }
     
-    public String getFileId(){return fileId;}
+    public String getUserID(){return userID;}
     
     public ArrayList<User> getUsers(){return users;}
     

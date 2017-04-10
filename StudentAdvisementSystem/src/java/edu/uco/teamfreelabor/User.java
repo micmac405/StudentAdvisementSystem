@@ -19,6 +19,7 @@ public class User {
     private String lastName;
     private String advisementStatus;
     private String fileId;
+    private String userID;
     
     /*private BufferedImage profilePhoto;
 
@@ -104,6 +105,14 @@ public class User {
 
     public void setAdvisementStatus(String advisementStatus) {
         this.advisementStatus = advisementStatus;
+    }
+    
+    public String getUserID(){
+        return userID;
+    }
+    
+    public void setUserID(String user){
+        this.userID = user;
     }
     
         private final static List<SelectItem> majors;

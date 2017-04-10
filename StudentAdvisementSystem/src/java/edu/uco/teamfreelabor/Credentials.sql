@@ -13,7 +13,6 @@ create table USERTABLE (
     MAJOR varchar(45),
     ADVISEMENT_STATUS varchar(40) DEFAULT 'Not Selected',
     PHONE_NUMBER varchar(13),
-    FILE_ID INT DEFAULT '1',
     primary key (id)
 );
 create table GROUPTABLE (
@@ -62,7 +61,7 @@ create table APPOINTMENTTABLE(
 
 --Store Profile Pictures 
 create table FILESTORAGE (
-    FILE_ID INT NOT NULL AUTO_INCREMENT,
+    FILE_ID INT NOT NULL,
     FILE_NAME VARCHAR(255),
     FILE_TYPE VARCHAR(255),
     FILE_SIZE BIGINT,
@@ -76,24 +75,24 @@ create table FILESTORAGE (
     john (password='ppp'): studentgroup
 */
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number, file_id)
+    major, advisement_status, phone_number)
     values ('root',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'root@uco.edu', 'Amy', 'Handcock', '43456712', '', '', '405-555-3456', default);
+        'root@uco.edu', 'Amy', 'Handcock', '43456712', '', '', '405-555-3456');
 insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'root');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'root');
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number, file_id)
+    major, advisement_status, phone_number)
     values ('admin',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'admin@uco.edu', '', '', '', '', '', '', default);
+        'admin@uco.edu', '', '', '', '', '', '');
 insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'admin');
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number, file_id)
+    major, advisement_status, phone_number)
     values ('john@uco.edu',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
         'john@uco.edu', 'John', 'Grunt', '34565412', '6100 - Computer Science ', default,
-        '405-555-1111', default);
+        '405-555-1111');
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 insert into EVENTTABLE (advisor_id, start_date, end_date)
     values ((select id from usertable where id = 1), '2017-03-31 07:30:00', '2017-03-31 08:00:00');

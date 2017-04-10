@@ -20,20 +20,25 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
 import javax.servlet.http.Part;
 import javax.sql.DataSource;
 
 
 
 @Named(value = "pictureBean")
-@SessionScoped
-public class PictureBean implements Serializable {
+@RequestScoped
+public class PictureBean  {
 
+    @Inject
+    private UserBean userBean;
+    
     private Part part;
     private List<PictureInfo> list;
 
@@ -90,13 +95,16 @@ public class PictureBean implements Serializable {
         inputStream = null;
         try {
             inputStream = part.getInputStream();
+            System.out.println("About to insert into FILESTORAGE. Here is USERID: " + userBean.getUserID());
             PreparedStatement insertQuery = conn.prepareStatement(
-                    "INSERT INTO FILESTORAGE (FILE_NAME, FILE_TYPE, FILE_SIZE, FILE_CONTENTS) "
-                    + "VALUES (?,?,?,?)");
-            insertQuery.setString(1, part.getSubmittedFileName());
-            insertQuery.setString(2, part.getContentType());
-            insertQuery.setLong(3, part.getSize());
-            insertQuery.setBinaryStream(4, inputStream);
+                    "INSERT INTO FILESTORAGE (FILE_ID, FILE_NAME, FILE_TYPE, FILE_SIZE, FILE_CONTENTS) "
+                    + "VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE FILE_NAME=VALUES(FILE_NAME), " 
+                    + "FILE_TYPE=VALUES(FILE_TYPE), FILE_SIZE=VALUES(FILE_SIZE), FILE_CONTENTS=VALUES(FILE_CONTENTS)");
+            insertQuery.setString(1, userBean.getUserID());
+            insertQuery.setString(2, part.getSubmittedFileName());
+            insertQuery.setString(3, part.getContentType());
+            insertQuery.setLong(4, part.getSize());
+            insertQuery.setBinaryStream(5, inputStream);
             
             int result = insertQuery.executeUpdate();
             if (result == 1) {

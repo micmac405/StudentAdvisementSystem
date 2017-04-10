@@ -25,9 +25,16 @@ public class ImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        int fileID = Integer.parseInt(request.getParameter("fileid"));
-        System.out.println(fileID);
+        int fileID = -1;
+        if(request.getParameter("fileid") != null ){
+            System.out.println("fileid != null!!");
+            fileID = Integer.parseInt(request.getParameter("fileid"));
+        }
+        else{
+            System.out.println("fileid == null!!");
+        }
+        
+        System.out.println("ImageServ fileid: " + fileID);
         String inLineParam = request.getParameter("inline");
         boolean inLine = false;
         if (inLineParam != null && inLineParam.equals("true")) {

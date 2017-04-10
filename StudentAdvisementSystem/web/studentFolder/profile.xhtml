@@ -12,7 +12,9 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> -->
 <!--            <h:outputStylesheet name="css/style.css"/>
             <h:outputStylesheet name="css/form-elements.css"/>-->
-            
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{userBean.init}"/>
+            </f:metadata>
             <title>Profile</title>
     </h:head> 
     <h:body>
@@ -68,7 +70,7 @@
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <!--<h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
-                            <h:graphicImage value="/ImageServlet?fileid=1&amp;inline=true"
+                            <h:graphicImage value="/ImageServlet?fileid=#{userBean.userID}&amp;inline=true"
                                 height="70" width="100" />
                             <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
