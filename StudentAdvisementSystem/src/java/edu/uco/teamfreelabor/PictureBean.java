@@ -97,7 +97,7 @@ public class PictureBean implements Serializable {
             insertQuery.setString(2, part.getContentType());
             insertQuery.setLong(3, part.getSize());
             insertQuery.setBinaryStream(4, inputStream);
-            System.out.println("Insert into FILESTORAGE values: " + part.getSubmittedFileName() +  ", " + part.getContentType() + ", "+ part.getSize() + ", \n" + inputStream);
+            
             int result = insertQuery.executeUpdate();
             if (result == 1) {
                 facesContext.addMessage("uploadForm:upload",
