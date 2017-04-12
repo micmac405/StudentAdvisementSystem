@@ -35,36 +35,37 @@
                     <!--div for login/password and sign in btn -->
                     <div class="form-bottom text-center" style="backgroud-color">
                         <h:form>
-                            <label for="basic-url">First Name</label>
+                            <!--<label for="basic-url">First Name</label>-->
                             <div class="input-group" >
                                 <span class="input-group-addon"><i class="fa fa-user fa-fw"></i></span>
                                 <h:inputText styleClass="form-control" value="#{userBean.firstName}" />
-                            </div>
+                            </div><br />
                             
-                            <label for="basic-url">Last Name</label>
+                            <!--<label for="basic-url">Last Name</label>-->
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
                                 <h:inputText styleClass="form-control" value="#{userBean.lastName}" /><br/>
-                            </div>
+                            </div><br />
                             
-                            <label for="basic-url">Phone Number</label><br/>
+                            <!--<label for="basic-url">Phone Number</label><br/>-->
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
                                 <h:inputText styleClass="form-control" value="#{userBean.phoneNumber}" /><br/>
-                            </div>
+                            </div><br />
                            
-                            <label for="basic-url">UCO ID</label><br/>
+                            <!--<label for="basic-url">UCO ID</label><br/>-->
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-asterisk fa-fw"></i></span>
                                 <h:inputText styleClass="form-control" value="#{userBean.id}" /><br/>
-                            </div>
+                            </div><br />
                             
-                            <label for="basic-url">Major</label><br/>
+                            <!--<label for="basic-url">Major</label><br/>-->
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
                                 <h:inputText styleClass="form-control" value="#{userBean.major}" /><br/>
-                                
                             </div>
+                            
+                            
                             <div>
                                 <br/>
                                 <div class="text-center">
@@ -72,7 +73,8 @@
                                     <label>     </label>
                                     <h:commandButton styleClass="btn btn-danger" value="Cancel" action="#{userBean.cancelSettings}" />
                                 </div>
-                            </div><br />    
+                            </div><br /> 
+                            <hr />
                         </h:form>
                         <h:form id="uploadForm" enctype="multipart/form-data">
                             <h:panelGrid columns="3">
