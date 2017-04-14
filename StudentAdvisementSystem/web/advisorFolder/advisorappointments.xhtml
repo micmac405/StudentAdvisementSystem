@@ -79,10 +79,11 @@
                             <p:inputText id="title" value="#{advisorScheduleView.event.title}" required="true" />
 
                             <p:outputLabel for="from" value="From:" />
-                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeZone="GMT-5" pattern="MM/dd/yyyy hh:mm a"/>
+                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeOnly="true" timeZone="GMT-5" pattern="hh:mm a">
+                            </p:calendar>
 
                             <p:outputLabel for="to" value="To:" />
-                            <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" timeZone="GMT-5" pattern="MM/dd/yyyy hh:mm a"/>
+                            <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" timeOnly="true" timeZone="GMT-5" pattern="hh:mm a"/>
 
                             <f:facet name="footer">
                                 <p:commandButton value="Cancel" oncomplete="PF('eventDialog').hide();"/>
@@ -98,11 +99,6 @@
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <!--        <script src="assets/js/jquery.min.js"></script>
-                <script src="bootstrap/js/bootstrap.min.js"></script>
-                 IE10 viewport hack for Surface/desktop Windows 8 bug 
-                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
         <!-- jQuery -->
         <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
 

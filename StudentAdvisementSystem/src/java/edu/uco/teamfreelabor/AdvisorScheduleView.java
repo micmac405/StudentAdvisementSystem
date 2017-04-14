@@ -42,13 +42,16 @@ public class AdvisorScheduleView implements Serializable {
     //To insert the date into SQL the date needs to be in this format
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    private Calendar selectedDate = Calendar.getInstance();
+    ;
+
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
 
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-                
+
         try {
             getUserId();
             loadAdvisorEvents();
@@ -56,8 +59,8 @@ public class AdvisorScheduleView implements Serializable {
             Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void loadAdvisorEvents() throws SQLException{
+
+    private void loadAdvisorEvents() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -70,32 +73,29 @@ public class AdvisorScheduleView implements Serializable {
 
         try {
             PreparedStatement ps = conn.prepareStatement("select * from EVENTTABLE where ADVISOR_ID = "
-            + userId);
-            
+                    + userId);
+
             ResultSet rs = ps.executeQuery();
-            
+
             ScheduleEvent readEvent;
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 readEvent = new DefaultScheduleEvent();
                 String readId = rs.getString("ID");
                 String title = rs.getString("TITLE");
                 Date startDate = rs.getTimestamp("START_DATE");
                 Date endDate = rs.getTimestamp("END_DATE");
-                
-                System.out.println("*********** Start date: " + startDate);
-                System.out.println("*********** End Date: " + endDate);
-                
+
                 ((DefaultScheduleEvent) readEvent).setStartDate(startDate);
                 ((DefaultScheduleEvent) readEvent).setEndDate(endDate);
                 ((DefaultScheduleEvent) readEvent).setTitle(title);
                 eventModel.addEvent(readEvent);
-                
+
                 //Set the id after adding it to the eventModel or it will be over written
                 readEvent.setId(readId);
             }
-            
-        } finally{
+
+        } finally {
             conn.close();
         }
     }
@@ -112,11 +112,11 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-            PreparedStatement ps = conn.prepareStatement("select ID from USERTABLE where USERNAME = '" 
+            PreparedStatement ps = conn.prepareStatement("select ID from USERTABLE where USERNAME = '"
                     + userBean.getUsername() + "'");
             ResultSet rs = ps.executeQuery();
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 userId = rs.getString("ID");
             }
         } finally {
@@ -140,12 +140,23 @@ public class AdvisorScheduleView implements Serializable {
             Calendar start = Calendar.getInstance();
             start.setTime(event.getStartDate());
 
+            //With time pnly the time is correct but the day is wrong. Need to set the correct day
+            start.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DATE), start.get(Calendar.HOUR), start.get(Calendar.MINUTE));
+
             Calendar end = (Calendar) start.clone();
             end.setTime(event.getEndDate());
 
+            end.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DATE), end.get(Calendar.HOUR), end.get(Calendar.MINUTE));
+            
+            //Need to set the correct dates and times for the event
+            ((DefaultScheduleEvent)event).setStartDate(start.getTime());
+            ((DefaultScheduleEvent)event).setStartDate(end.getTime());
+
             //Insert the event (appointment)
             PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (title, advisor_id, start_date, end_date)"
-                    + " values ('" + event.getTitle() + "', "+ userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
+                    + " values ('" + event.getTitle() + "', " + userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
             ps.execute();
 
             //Get the last inserted id from this admin
@@ -227,11 +238,10 @@ public class AdvisorScheduleView implements Serializable {
 
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
-            eventModel.addEvent(event);
-
             try {
                 makeAppointment();
                 makeTimeSlots();
+                eventModel.addEvent(event);
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -254,8 +264,8 @@ public class AdvisorScheduleView implements Serializable {
             }
         }
     }
-    
-    private void removeAppointments() throws SQLException{
+
+    private void removeAppointments() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -269,14 +279,14 @@ public class AdvisorScheduleView implements Serializable {
         try {
             //Remove all apointments
             PreparedStatement ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
-            + event.getId());
+                    + event.getId());
             ps.execute();
-            
+
             ps = conn.prepareStatement("delete from EVENTTABLE where ID = " + event.getId());
             ps.execute();
-            
+
         } finally {
-            
+
         }
     }
 
@@ -286,6 +296,15 @@ public class AdvisorScheduleView implements Serializable {
 
     public void onDateSelect(SelectEvent selectEvent) {
         event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
+        selectedDate.setTime((Date) selectEvent.getObject());
+    }
+
+    public Calendar getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(Calendar selectedDate) {
+        this.selectedDate = selectedDate;
     }
 
     private void addMessage(FacesMessage message) {
