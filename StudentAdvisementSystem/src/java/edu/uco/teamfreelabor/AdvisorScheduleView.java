@@ -43,7 +43,8 @@ public class AdvisorScheduleView implements Serializable {
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private Calendar selectedDate = Calendar.getInstance();
-    ;
+    private int startHour = 0;
+    private int startMinute = 0;
 
     private ScheduleModel eventModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
@@ -142,18 +143,18 @@ public class AdvisorScheduleView implements Serializable {
 
             //With time pnly the time is correct but the day is wrong. Need to set the correct day
             start.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DATE), start.get(Calendar.HOUR), start.get(Calendar.MINUTE));
+                    selectedDate.get(Calendar.DATE), start.get(Calendar.HOUR_OF_DAY) + 1, start.get(Calendar.MINUTE));
 
-            Calendar end = (Calendar) start.clone();
+            Calendar end = Calendar.getInstance();
             end.setTime(event.getEndDate());
 
             end.set(selectedDate.get(Calendar.YEAR), selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DATE), end.get(Calendar.HOUR), end.get(Calendar.MINUTE));
+                    selectedDate.get(Calendar.DATE), end.get(Calendar.HOUR_OF_DAY) + 1, end.get(Calendar.MINUTE));
             
             //Need to set the correct dates and times for the event
             ((DefaultScheduleEvent)event).setStartDate(start.getTime());
-            ((DefaultScheduleEvent)event).setStartDate(end.getTime());
-
+            ((DefaultScheduleEvent)event).setEndDate(end.getTime());
+            
             //Insert the event (appointment)
             PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (title, advisor_id, start_date, end_date)"
                     + " values ('" + event.getTitle() + "', " + userId + ", '" + sdf.format(start.getTime()) + "', '" + sdf.format(end.getTime()) + "')");
@@ -169,6 +170,9 @@ public class AdvisorScheduleView implements Serializable {
             }
         } finally {
             conn.close();
+            
+            startHour = 0;
+            startMinute = 0;
         }
     }
 
@@ -298,6 +302,18 @@ public class AdvisorScheduleView implements Serializable {
         event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
         selectedDate.setTime((Date) selectEvent.getObject());
     }
+    
+    public void onTimeSelect(SelectEvent selectEvent) {
+        //Java Date sucks so use a calendar so hour and minute can be pulled
+        Calendar startTime = Calendar.getInstance();
+        startTime.setTime(event.getStartDate());
+
+        //Hour off by one?
+        startHour = startTime.get(Calendar.HOUR_OF_DAY) + 1;
+        startMinute = startTime.get(Calendar.MINUTE);
+        
+        ((DefaultScheduleEvent)event).setEndDate(event.getStartDate());
+    }
 
     public Calendar getSelectedDate() {
         return selectedDate;
@@ -307,6 +323,22 @@ public class AdvisorScheduleView implements Serializable {
         this.selectedDate = selectedDate;
     }
 
+    public int getStartHour() {
+        return startHour;
+    }
+
+    public void setStartHour(int startHour) {
+        this.startHour = startHour;
+    }
+
+    public int getStartMinute() {
+        return startMinute;
+    }
+
+    public void setStartMinute(int startMinute) {
+        this.startMinute = startMinute;
+    }
+    
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
