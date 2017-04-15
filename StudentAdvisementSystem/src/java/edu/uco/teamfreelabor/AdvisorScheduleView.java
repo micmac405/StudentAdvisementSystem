@@ -352,11 +352,13 @@ public class AdvisorScheduleView implements Serializable {
         startHour = time.get(Calendar.HOUR_OF_DAY);
         startMinute = time.get(Calendar.MINUTE);
 
-        System.out.println("on time select start date: " + sdf.format(event.getStartDate()));
-        System.out.println("on time select end date: " + sdf.format(event.getEndDate()));
+        correctDateTime();
 
         //Change end date if it is before start
-        if (event.getStartDate().after(event.getEndDate())) {
+        startTime.setTime(event.getStartDate());
+        endTime.setTime(event.getEndDate());
+        
+        if (startTime.after(endTime)) {
             ((DefaultScheduleEvent) event).setEndDate(event.getStartDate());
         }
     }
