@@ -79,16 +79,16 @@
                             <p:inputText id="title" value="#{advisorScheduleView.event.title}" required="true" />
 
                             <p:outputLabel for="from" value="From:" />
-                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeOnly="true" timeZone="GMT-5" pattern="hh:mm a">
+                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeOnly="true"  pattern="hh:mm a"> <!--timeZone="GMT-5"-->
                                 <p:ajax event="dateSelect" listener="#{advisorScheduleView.onTimeSelect}" update="to" />
                             </p:calendar>
 
                             <p:outputLabel for="to" value="To:" />
-                            <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" timeOnly="true" timeZone="GMT-5" pattern="hh:mm a" 
-                                        minMinute = "#{advisorScheduleView.startMinute}" minHour="#{advisorScheduleView.startHour}"/>
+                            <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" timeOnly="true" pattern="hh:mm a" 
+                                        minMinute = "#{advisorScheduleView.startMinute}" minHour="#{advisorScheduleView.startHour}"/> 
 
                             <f:facet name="footer">
-                                <p:commandButton value="Cancel" oncomplete="PF('eventDialog').hide();"/>
+                                <p:commandButton value="Cancel" actionListener="#{advisorScheduleView.cancelEvent}"  oncomplete="PF('myschedule').update();PF('eventDialog').hide();"/>
                                 <p:commandButton value ="Delete" actionListener="#{advisorScheduleView.deleteEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
                                 <p:commandButton id="addButton" value="Save" actionListener="#{advisorScheduleView.addEvent}" 
                                                  oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
