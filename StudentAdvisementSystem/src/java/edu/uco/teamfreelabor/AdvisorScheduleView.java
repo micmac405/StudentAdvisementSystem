@@ -44,15 +44,14 @@ public class AdvisorScheduleView implements Serializable {
 
     //Needed to convert the event date and time to correct values
     //Using time only for a caledar only sets the time so the date must 
-    //be put back in Date does not allow changing the date so calendar has 
-    //to be used.
-    
+    //be put back in the dates. Java Date does not allow changing the date so 
+    //calendar has to be used.
     // The date when the user clicks on a day in the schedule
     private Calendar selectedDate = Calendar.getInstance();
     private Calendar startTime = Calendar.getInstance();
     private Calendar endTime = Calendar.getInstance();
 
-    //Used to set the limits for the end date and time
+    //Used to set the limits for the end date time
     private int startHour = 0;
     private int startMinute = 0;
 
@@ -61,7 +60,7 @@ public class AdvisorScheduleView implements Serializable {
     //The event that holds the selected date and time
     private ScheduleEvent event = new DefaultScheduleEvent();
 
-    //If event is changed but not saved reload the event
+    //If event is changed but not saved used to reload the event
     private ScheduleEvent eventBackup = new DefaultScheduleEvent();
 
     @PostConstruct
@@ -116,6 +115,9 @@ public class AdvisorScheduleView implements Serializable {
         }
     }
 
+    //**************************************************************
+    //User bean has the id now remove later
+    //**************************************************************
     private void getUserId() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
@@ -140,7 +142,37 @@ public class AdvisorScheduleView implements Serializable {
         }
     }
 
-    private void makeAppointment() throws SQLException {
+    //Update a changed appointment
+    private void updateAppointment() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        System.out.println("updateAppointment startTime: " + sdf.format(startTime.getTime()));
+        System.out.println("updateAppointment endTime: " + sdf.format(endTime.getTime()));
+
+        try {
+            PreparedStatement ps
+                    = conn.prepareStatement("update EVENTTABLE set TITLE = '"
+                            + event.getTitle() + "', START_DATE = '"
+                            + sdf.format(startTime.getTime()) + "', END_DATE = '"
+                            + sdf.format(endTime.getTime()) + "' WHERE ID = "
+                            + event.getId());
+
+            ps.execute();
+        } finally {
+            conn.close();
+        }
+    }
+
+    //Put the event the advisor made into the table
+    private void makeEvent() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -152,8 +184,6 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-            correctDateTime();
-
             //Insert the event (appointment)
             PreparedStatement ps = conn.prepareStatement("insert into EVENTTABLE (title, advisor_id, start_date, end_date)"
                     + " values ('" + event.getTitle() + "', " + userId + ", '"
@@ -177,7 +207,9 @@ public class AdvisorScheduleView implements Serializable {
         }
     }
 
-    private void makeTimeSlots() throws SQLException {
+    //After the event is stored make appointment times for the students to 
+    //select
+    private void makeAppointments() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -215,6 +247,43 @@ public class AdvisorScheduleView implements Serializable {
         }
     }
 
+    //After the event is changed make new time slots for the difference in time
+    private void makeAppointments(Calendar start, Calendar end) throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps;
+
+            System.out.println("makeTimeSlots end  : " + end.getTime());
+
+            //Make time slots from the date
+            do {
+                //Insert the appointment into the table
+                //Must be in the loop or only the first value for start will be used
+                ps = conn.prepareStatement(
+                        "insert into APPOINTMENTTABLE (event_id, appointment_time, booked)"
+                        + " values(" + event.getId() + ", '"
+                        + sdf.format(start.getTime()) + "', 0)"
+                );
+                ps.execute();
+                //Make the start time go up by the slot time amount
+                System.out.println("makeTimeSlots start: " + start.getTime());
+
+                start.set(Calendar.MINUTE, start.get(Calendar.MINUTE) + SLOT_TIME_AMOUNT);
+            } while (end.after(start));
+        } finally {
+            conn.close();
+        }
+    }
+
     //Time only for the schedule put the incorrect date with the start and end 
     //times. Put the correct date with the correct times.
     private void correctDateTime() {
@@ -237,25 +306,8 @@ public class AdvisorScheduleView implements Serializable {
         ((DefaultScheduleEvent) event).setEndDate(endTime.getTime());
     }
 
-    public Date getInitialDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY,
-                calendar.get(Calendar.DATE), 0, 0, 0);
-
-        return calendar.getTime();
-    }
-
     public ScheduleModel getEventModel() {
         return eventModel;
-    }
-
-    //Not sure if it is needed
-    private Calendar today() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DATE), 0, 0, 0);
-
-        return calendar;
     }
 
     public ScheduleEvent getEvent() {
@@ -269,18 +321,101 @@ public class AdvisorScheduleView implements Serializable {
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
             try {
-                makeAppointment();
-                makeTimeSlots();
+                correctDateTime();
+                makeEvent();
+                makeAppointments();
                 eventModel.addEvent(event);
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             correctDateTime();
+            checkEventTimes();
             eventModel.updateEvent(event);
         }
 
+        //Make a blank event for the next selection
         event = new DefaultScheduleEvent();
+    }
+
+    //If changes were made and saved check the times to see if the database
+    //needs to be updated
+    private void checkEventTimes() {
+        //The times of the event before the change
+        Calendar oldStart = Calendar.getInstance();
+        Calendar oldEnd = Calendar.getInstance();
+
+        oldStart.setTime(eventBackup.getStartDate());
+        oldEnd.setTime(eventBackup.getEndDate());
+
+        //The times of the event after the change
+        Calendar newStart = Calendar.getInstance();
+        Calendar newEnd = Calendar.getInstance();
+
+        newStart.setTime(event.getStartDate());
+        newEnd.setTime(event.getEndDate());
+
+        //If either date or the title is changed update the appointment
+        boolean changesMade = false;
+
+        //Need to check if the start time is past the end time and handle it 
+        //differently. SQL Exception happens right now
+        
+        //Check start time
+        if (oldStart.after(newStart)) {
+            changesMade = true;
+
+            System.out.println("checkEventTimes START old after new *********************");
+            try {
+                makeAppointments(newStart, oldStart);
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (oldStart.before(newStart)) {
+            changesMade = true;
+
+            System.out.println("checkEventTimes START old before new **********************");
+            try {
+                removeAppointmentsBefore();
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        //Check end time
+        if (oldEnd.after(newEnd)) {
+            changesMade = true;
+
+            System.out.println("checkEventTimes END old after new **********************");
+            try {
+                removeAppointmentsAfter();
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (oldEnd.before(newEnd)) {
+            changesMade = true;
+
+            System.out.println("checkEventTimes END old before new **********************");
+            try {
+                makeAppointments(oldEnd, newEnd);
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        //Check title
+        if (event.getTitle().compareTo(eventBackup.getTitle()) != 0) {
+            changesMade = true;
+        }
+
+        //Update the appointment in the table
+        if (changesMade) {
+            try {
+                updateAppointment();
+            } catch (SQLException ex) {
+                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     public void deleteEvent() {
@@ -288,14 +423,61 @@ public class AdvisorScheduleView implements Serializable {
             eventModel.deleteEvent(event);
 
             try {
-                removeAppointments();
+                removeAllAppointments();
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
-    private void removeAppointments() throws SQLException {
+    //Remove the appointments before the time change
+    private void removeAppointmentsBefore() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps
+                    = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+                            + event.getId() + " AND APPOINTMENT_TIME < '"
+                            + sdf.format(startTime.getTime()) + "'");
+            ps.execute();
+        } finally {
+            conn.close();
+        }
+    }
+
+    //Remove the appointments after the time changes
+    private void removeAppointmentsAfter() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps
+                    = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+                            + event.getId() + " AND APPOINTMENT_TIME >= '"
+                            + sdf.format(endTime.getTime()) + "'");
+            ps.execute();
+        } finally {
+            conn.close();
+        }
+    }
+
+    //If an event is deleted by an advisor remove all of the appointments
+    private void removeAllAppointments() throws SQLException {
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -316,48 +498,64 @@ public class AdvisorScheduleView implements Serializable {
             ps.execute();
 
         } finally {
-
+            conn.close();
         }
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
         event = (ScheduleEvent) selectEvent.getObject();
         selectedDate.setTime(event.getStartDate());
-        
+
         //Make a backup incase the user cancels 
-        ((DefaultScheduleEvent)eventBackup).setTitle(event.getTitle());
-        ((DefaultScheduleEvent)eventBackup).setStartDate(event.getStartDate());
-        ((DefaultScheduleEvent)eventBackup).setEndDate(event.getEndDate());
+        ((DefaultScheduleEvent) eventBackup).setTitle(event.getTitle());
+        ((DefaultScheduleEvent) eventBackup).setStartDate(event.getStartDate());
+        ((DefaultScheduleEvent) eventBackup).setEndDate(event.getEndDate());
     }
 
     public void cancelEvent() {
         //Put the values that were there back
-        ((DefaultScheduleEvent)event).setTitle(eventBackup.getTitle());
-        ((DefaultScheduleEvent)event).setStartDate(eventBackup.getStartDate());
-        ((DefaultScheduleEvent)event).setEndDate(eventBackup.getEndDate());
+        ((DefaultScheduleEvent) event).setTitle(eventBackup.getTitle());
+        ((DefaultScheduleEvent) event).setStartDate(eventBackup.getStartDate());
+        ((DefaultScheduleEvent) event).setEndDate(eventBackup.getEndDate());
+
+        //Reset the min time selection for end time
+        setMinTimeSelection();
     }
 
+    //Make a temp event to store the values.
     public void onDateSelect(SelectEvent selectEvent) {
-        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), 
+        event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(),
                 (Date) selectEvent.getObject());
+
+        //Save the date that was selected
         selectedDate.setTime((Date) selectEvent.getObject());
     }
 
-    public void onTimeSelect() {
+    //Limits the end time so that it can not be before the start time
+    private void setMinTimeSelection() {
         //Use a calendar so hour and minute can be pulled
         Calendar time = Calendar.getInstance();
         time.setTime(event.getStartDate());
 
-        //Hour off by one?
         startHour = time.get(Calendar.HOUR_OF_DAY);
-        startMinute = time.get(Calendar.MINUTE);
 
+        //******************BUG*********************
+        //Need to only limit minutes when hour is the same
+        startMinute = time.get(Calendar.MINUTE);
+    }
+
+    //When the start time is changed adjustment may need to be made to the end
+    public void onTimeSelect() {
+        setMinTimeSelection();
+
+        //Time only sets the time so the selected date needs to be inserted. 
         correctDateTime();
 
-        //Change end date if it is before start
+        //Change end date if it is before start time
+        //need too use calendar not date
         startTime.setTime(event.getStartDate());
         endTime.setTime(event.getEndDate());
-        
+
         if (startTime.after(endTime)) {
             ((DefaultScheduleEvent) event).setEndDate(event.getStartDate());
         }
