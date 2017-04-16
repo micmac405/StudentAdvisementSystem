@@ -9,8 +9,8 @@
         <title>Login</title>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
-        <link rel="stylesheet" href="resources/css/style.css"/>
-        <link rel="stylesheet" href="resources/css/form-elements.css"/>
+        <!--<link rel="stylesheet" href="resources/css/style.css"/>
+        <link rel="stylesheet" href="resources/css/form-elements.css"/>-->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
         
@@ -20,6 +20,9 @@
         <meta name="Author" content="Micah McKinnon"></meta>        
     </h:head>
     <h:body>
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/form-elements.css"/>
+        
         <div class="top-content">
             <div class="inner-bg">
                 <div class="container">
@@ -62,6 +65,7 @@
                                             <br />
                                             <br />
                                             Not Registered? <h:link value="Sign up here" outcome="/registration" /><br />
+                                            Advisor? <h:link value="Sign in here" outcome="/advisorFolder/adminhome" /><br />
                                         </form>
                                     </div>
                                 </div>
