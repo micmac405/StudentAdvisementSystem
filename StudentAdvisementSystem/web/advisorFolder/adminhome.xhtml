@@ -81,7 +81,8 @@
  
                             <p:panel header="#{app.time}" style="text-align:center">
                             <h:panelGrid columns="1" style="width:100%">
-                                <p:graphicImage value="/ImageServlet?fileid=#{app.ID}&amp;inline=true"/> 
+                                <p:graphicImage value="/ImageServlet?fileid=#{app.ID}&amp;inline=true"
+                                                height="70" width="100"/> 
  
                                 <h:outputText value="#{app.firstName} #{app.lastName}" />
  
@@ -98,7 +99,7 @@
                             <p:outputPanel id="carDetail" style="text-align:center;">
                                 <p:panelGrid  columns="2" rendered="true" columnClasses="label,value">
                                     <f:facet name="header">
-                                        <p:graphicImage value=="images/CSLogo.png"/> 
+                                        <p:graphicImage value="images/CSLogo.png"/> 
                                     </f:facet>
  
                                     <h:outputText value="Id:" />
