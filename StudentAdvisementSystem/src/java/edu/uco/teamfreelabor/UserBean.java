@@ -40,6 +40,7 @@ public class UserBean implements Serializable {
     private String advisementStatus;
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
+    
 
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp = "[a-zA-Z]*", message = "Must be characters only.")
