@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 
     <h:head>
@@ -68,10 +69,57 @@
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <div class="row placeholders">
+                    <h:form id="form">
+                        <p:dataGrid var="app" value="#{advisorScheduleView.myAppointments}" columns="3" layout="grid"
+                            rows="6" paginator="true" id="appointments"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="6,12,16">
+ 
+                        <f:facet name="header">
+                            Todays Appointments
+                        </f:facet>
+ 
+                            <p:panel header="#{app.time}" style="text-align:center">
+                            <h:panelGrid columns="1" style="width:100%">
+                                <p:graphicImage value="/ImageServlet?fileid=#{app.ID}&amp;inline=true"/> 
+ 
+                                <h:outputText value="#{app.firstName} #{app.lastName}" />
+ 
+                                <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog').show()" title="View Detail">
+                                    <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
+                                    <f:setPropertyActionListener value="#{MyAppointment}" target="#" />
+                                </p:commandLink>
+                            </h:panelGrid>
+                        </p:panel>
+ 
+                        </p:dataGrid>
+ 
+                        <p:dialog header="Appointment Info" widgetVar="carDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                            <p:outputPanel id="carDetail" style="text-align:center;">
+                                <p:panelGrid  columns="2" rendered="true" columnClasses="label,value">
+                                    <f:facet name="header">
+                                        <p:graphicImage value=="images/CSLogo.png"/> 
+                                    </f:facet>
+ 
+                                    <h:outputText value="Id:" />
+                                    <h:outputText value="#id" />
+ 
+                                    <h:outputText value="Year" />
+                                    <h:outputText value="#year" />
+ 
+                                    <h:outputText value="Color:" />
+                                    <h:outputText value="#color"/> <!--style=""-->
+ 
+                                    <h:outputText value="Price" />
+                                    <h:outputText value="$" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+                    </h:form>
+                    <!--<div class="row placeholders">
                         <div class="col-xs-6 col-sm-3">
                             <h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>
-                            <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
+                            <img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
@@ -80,14 +128,14 @@
                                 <br />
                                 <h4>Your next advisement appointment is on <strong>{DATE}</strong> at 
                                     <strong>{TIME}</strong> with <strong>{STUDENT NAME}</strong></h4>
-                                <h4></h4> <!-- Change to output label -->
+                                <h4></h4> Change to output label
 
-                                <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
+                                <button type="button" class="btn btn-default">Edit Appointment</button>
                             </div>
                         </div>
                         <div class="clear-columns clearfix visible-xs-block"></div>
                     </div>
-                    <!--<h2 class="sub-header">Selected Courses</h2>
+                    <h2 class="sub-header">Selected Courses</h2>
                     <div class="table-responsive">
                         <h:dataTable value="#{userBean.selectedCourses}" var="class" class="table table-striped">
                             <h:column>

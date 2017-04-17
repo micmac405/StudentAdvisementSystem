@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -62,6 +63,9 @@ public class AdvisorScheduleView implements Serializable {
 
     //If event is changed but not saved used to reload the event
     private ScheduleEvent eventBackup = new DefaultScheduleEvent();
+    
+    //testing for appointment stuffsss -----
+    private ArrayList<MyAppointments> myAppointments = new ArrayList<>();
 
     @PostConstruct
     public void init() {
@@ -69,6 +73,7 @@ public class AdvisorScheduleView implements Serializable {
 
         try {
             getUserId();
+            myAppointments = retrieveApps();
             loadAdvisorEvents();
         } catch (SQLException ex) {
             Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
@@ -560,6 +565,49 @@ public class AdvisorScheduleView implements Serializable {
             ((DefaultScheduleEvent) event).setEndDate(event.getStartDate());
         }
     }
+    
+    public ArrayList<MyAppointments> retrieveApps() throws SQLException{
+        if(!myAppointments.isEmpty())
+            myAppointments.clear();
+        
+        ArrayList<MyAppointments> temp = new ArrayList<>();
+        
+        System.out.println("We at least got to the method!");
+         if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement("select u.FIRST_NAME, "
+                    + "u.LAST_NAME, u.ID, a.APPOINTMENT_TIME from appointmenttable a "
+                    + "join eventtable e on a.`EVENT_ID` = e.`ID` "
+                    + "join usertable u on a.`STUDENT_ID` = u.`ID` "
+                    + "where e.`ADVISOR_ID` = ? and a.`BOOKED` = 1;");
+            ps.setString(1, userId);
+            ResultSet results = ps.executeQuery();
+            System.out.println("The Advisor ID = " + userId);
+            while(results.next()){
+                System.out.println("We at least started the query");
+                MyAppointments newApp = new MyAppointments();
+                newApp.setID(results.getInt("ID"));
+                newApp.setFirstName(results.getString("FIRST_NAME"));
+                newApp.setLastName(results.getString("LAST_NAME"));
+                newApp.setTime(results.getTimestamp("APPOINTMENT_TIME"));
+                temp.add(newApp);
+                System.out.println(newApp);
+            }
+        
+        } finally {
+          conn.close();  
+        }
+        return temp;
+    }
 
     public Calendar getSelectedDate() {
         return selectedDate;
@@ -588,4 +636,10 @@ public class AdvisorScheduleView implements Serializable {
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
+    
+    public ArrayList<MyAppointments> getMyAppointments(){
+        return myAppointments;
+    }
+    
+   
 }
