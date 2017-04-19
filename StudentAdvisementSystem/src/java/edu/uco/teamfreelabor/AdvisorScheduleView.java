@@ -199,16 +199,14 @@ public class AdvisorScheduleView implements Serializable {
 
             //Get the last inserted id from this admin
             ResultSet rs = ps.executeQuery("select last_insert_id() as last_id from EVENTTABLE");
-            
+
             eventModel.addEvent(event);
-            
+
             //Must check next before doing anything
             if (rs.next()) {
                 //Set the events id to match the database id
                 event.setId(rs.getString("last_id"));
             }
-            
-            System.out.println("Make event event id: " + event.getId());
         } finally {
             conn.close();
 
@@ -334,7 +332,7 @@ public class AdvisorScheduleView implements Serializable {
                 correctDateTime();
                 makeEvent();
                 makeAppointments();
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
             }
