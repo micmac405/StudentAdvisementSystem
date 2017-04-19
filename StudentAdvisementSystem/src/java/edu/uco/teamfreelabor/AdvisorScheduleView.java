@@ -63,7 +63,7 @@ public class AdvisorScheduleView implements Serializable {
 
     //If event is changed but not saved used to reload the event
     private ScheduleEvent eventBackup = new DefaultScheduleEvent();
-    
+
     //testing for appointment stuffsss -----
     private ArrayList<MyAppointments> myAppointments = new ArrayList<>();
 
@@ -198,12 +198,16 @@ public class AdvisorScheduleView implements Serializable {
 
             //Get the last inserted id from this admin
             ResultSet rs = ps.executeQuery("select last_insert_id() as last_id from EVENTTABLE");
-
+            
+            eventModel.addEvent(event);
+            
             //Must check next before doing anything
             if (rs.next()) {
                 //Set the events id to match the database id
                 event.setId(rs.getString("last_id"));
             }
+            
+            System.out.println("Make event event id: " + event.getId());
         } finally {
             conn.close();
 
@@ -329,7 +333,7 @@ public class AdvisorScheduleView implements Serializable {
                 correctDateTime();
                 makeEvent();
                 makeAppointments();
-                eventModel.addEvent(event);
+                
             } catch (SQLException ex) {
                 Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -365,7 +369,6 @@ public class AdvisorScheduleView implements Serializable {
 
         //Need to check if the start time is past the end time and handle it 
         //differently. SQL Exception happens right now
-        
         //Check start time
         if (oldStart.after(newStart)) {
             changesMade = true;
@@ -565,15 +568,16 @@ public class AdvisorScheduleView implements Serializable {
             ((DefaultScheduleEvent) event).setEndDate(event.getStartDate());
         }
     }
-    
-    public ArrayList<MyAppointments> retrieveApps() throws SQLException{
-        if(!myAppointments.isEmpty())
+
+    public ArrayList<MyAppointments> retrieveApps() throws SQLException {
+        if (!myAppointments.isEmpty()) {
             myAppointments.clear();
-        
+        }
+
         ArrayList<MyAppointments> temp = new ArrayList<>();
-        
+
         System.out.println("We at least got to the method!");
-         if (ds == null) {
+        if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
 
@@ -592,7 +596,7 @@ public class AdvisorScheduleView implements Serializable {
             ps.setString(1, userId);
             ResultSet results = ps.executeQuery();
             System.out.println("The Advisor ID = " + userId);
-            while(results.next()){
+            while (results.next()) {
                 System.out.println("We at least started the query");
                 MyAppointments newApp = new MyAppointments();
                 newApp.setID(results.getInt("ID"));
@@ -602,9 +606,9 @@ public class AdvisorScheduleView implements Serializable {
                 temp.add(newApp);
                 System.out.println(newApp);
             }
-        
+
         } finally {
-          conn.close();  
+            conn.close();
         }
         return temp;
     }
@@ -636,10 +640,8 @@ public class AdvisorScheduleView implements Serializable {
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
-    public ArrayList<MyAppointments> getMyAppointments(){
+
+    public ArrayList<MyAppointments> getMyAppointments() {
         return myAppointments;
     }
-    
-   
 }
