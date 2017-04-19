@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, GROUPTABLE, TEMPUSERTABLE, COMPLETED, COURSE, FILESTORAGE, USERTABLE;
 
 create table USERTABLE (
@@ -118,101 +116,179 @@ insert into USERTABLE (username, password, email, first_name, last_name, uco_id,
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
         'admin@uco.edu', '', '', 99999999, '', '', '');
 insert into GROUPTABLE (groupname, username) values ('advisorgroup', 'admin');
+
+-- ****************************************************************************************
+-- ****************************   Students   ****************************
+-- ****************************************************************************************
 insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
     major, advisement_status, phone_number)
     values ('john@uco.edu',
         'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
         'john@uco.edu', 'John', 'Grunt', 34565412, '6100 - Computer Science ', default,
         '405-555-1111');
--- Creating users for my video... can be deleted later
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('markson@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'park@uco.edu', 'Molly', 'Markson', 14565412, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('alby@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'alby@uco.edu', 'Hannah', 'Alby', 34456412, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('jack@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'jack@uco.edu', 'Chris', 'Jack', 90876456, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('blunt@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'blunt@uco.edu', 'John', 'Blunt', 37894122, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('clem@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'clem@uco.edu', 'Gary', 'Clem', 34785612, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('wilkins@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'wilkins@uco.edu', 'Sol', 'Wilkins', 38491212, '6100 - Computer Science ', default,
-        '405-555-1111');
-insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
-    major, advisement_status, phone_number)
-    values ('holliday@uco.edu',
-        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
-        'holliday@uco.edu', 'Anthony', 'Holliday', 30091212, '6100 - Computer Science ', default,
-        '405-555-1111');
-
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'markson@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'alby@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'jack@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'blunt@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'clem@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'wilkins@uco.edu');
-insert into GROUPTABLE (groupname, username) values ('studentgroup', 'holliday@uco.edu');
-
--- Done
 insert into GROUPTABLE (groupname, username) values ('studentgroup', 'john@uco.edu');
 
--- Advisor makes on their schedule
-insert into EVENTTABLE (title, advisor_id, start_date, end_date)
-    values ('Morning', 1, '2017-03-31 07:30:00', '2017-03-31 08:00:00');
-insert into EVENTTABLE (title, advisor_id, start_date, end_date)
-    values ('Afternoon', 2, '2017-04-5 12:30:00', '2017-04-5 14:00:00');
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('a@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'a@uco.edu', 'A', 'Apple', 34565412, '6100 - Computer Science ', '2017-04-28 08:30:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'a@uco.edu');
 
--- What the student will see on their schedule
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (1, '2017-03-31 07:30:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (1, '2017-03-31 07:40:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (1, '2017-03-31 07:50:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (1, '2017-03-30 08:50:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 12:30:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 12:40:00', 0);
-insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values ((select id from eventtable where id = 1), '2017-04-05 08:50:00', 0);
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('b@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'b@uco.edu', 'B', 'Boat', 34565412, '6100 - Computer Science ', '2017-04-28 08:50:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'b@uco.edu');
 
--- Fake Apps for video!!
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('c@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'c@uco.edu', 'C', 'Cat', 34565412, '6100 - Computer Science ', '2017-04-28 09:00:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'c@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('d@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'd@uco.edu', 'D', 'Dog', 34565412, '6100 - Computer Science ', '2017-04-28 09:20:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'd@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('e@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'e@uco.edu', 'E', 'Egg', 34565412, '6100 - Computer Science ', '2017-04-28 16:00:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'e@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('f@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'f@uco.edu', 'F', 'Fish', 34565412, '6100 - Computer Science ', '2017-04-28 16:10:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'f@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('g@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'g@uco.edu', 'G', 'Grape', 34565412, '6100 - Computer Science ', '2017-04-28 16:20:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'g@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('h@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'h@uco.edu', 'H', 'Hat', 34565412, '6100 - Computer Science ', '2017-04-25 12:40:00',
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'h@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('i@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'i@uco.edu', 'I', 'Ice', 34565412, '6100 - Computer Science ', default,
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'i@uco.edu');
+
+insert into USERTABLE (username, password, email, first_name, last_name, uco_id, 
+    major, advisement_status, phone_number)
+    values ('j@uco.edu',
+        'c4289629b08bc4d61411aaa6d6d4a0c3c5f8c1e848e282976e29b6bed5aeedc7',
+        'j@uco.edu', 'J', 'Jam', 34565412, '6100 - Computer Science ', default,
+        '405-555-1111');
+insert into GROUPTABLE (groupname, username) values ('studentgroup', 'j@uco.edu');
+
+-- ****************************************************************************************
+-- ****************************   Events for the admin login   ****************************
+-- ****************************************************************************************
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Afternoon', 2, '2017-04-5 12:30:00', '2017-04-5 13:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Before Meeting', 2, '2017-04-28 08:30:00', '2017-04-28 09:30:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('After Class', 2, '2017-04-28 16:00:00', '2017-04-28 17:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('After Lunch', 2, '2017-04-25 12:30:00', '2017-04-25 13:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Morning', 2, '2017-04-25 08:00:00', '2017-04-25 08:30:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Afternoon', 2, '2017-05-2 13:30:00', '2017-05-2 14:00:00');
+insert into EVENTTABLE (title, advisor_id, start_date, end_date)
+    values ('Before Lunch', 2, '2017-05-5 11:00:00', '2017-05-5 11:30:00');
+
+-- From the events in admin login
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-18 12:50:00', 0);
+    values (1, '2017-04-15 12:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-18 13:00:00', 0);
+    values (1, '2017-04-15 12:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-17 13:40:00', 0);
+    values (1, '2017-04-15 12:50:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (2, '2017-04-28 08:30:00', 1, 4);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-17 12:30:00', 0);
+    values (2, '2017-04-28 08:40:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (2, '2017-04-28 08:50:00', 1, 5);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (2, '2017-04-28 09:00:00', 1, 6);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-17 12:40:00', 0);
--- can delete these
+    values (2, '2017-04-28 09:10:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (2, '2017-04-28 09:20:00', 1, 7);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (2, '2017-04-28 09:30:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (3, '2017-04-28 16:00:00', 1, 8);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (3, '2017-04-28 16:10:00', 1, 9);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (3, '2017-04-28 16:20:00', 1, 10);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (3, '2017-04-28 16:30:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (3, '2017-04-28 16:40:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (3, '2017-04-28 16:50:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (4, '2017-04-25 12:30:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
+    values (4, '2017-04-25 12:40:00', 1, 11);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (4, '2017-04-25 12:50:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (5, '2017-04-25 08:00:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (5, '2017-04-25 08:10:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (5, '2017-04-25 08:20:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (6, '2017-05-2 13:30:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (6, '2017-05-2 13:40:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (6, '2017-05-2 13:50:00', 0);
+
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (7, '2017-05-5 11:00:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (7, '2017-05-5 11:10:00', 0);
+insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
+    values (7, '2017-05-5 11:20:00', 0);
 
 /*********************************************************************************************************
 INSERT COURSES
@@ -406,4 +482,3 @@ VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1513');
 
 INSERT INTO COMPLETED (STUDENT_ID, COURSE_TYPE, COURSE_NUM)
 VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1613');
-
