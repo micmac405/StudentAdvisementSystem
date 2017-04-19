@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS APPOINTMENTTABLE, EVENTTABLE, GROUPTABLE, TEMPUSERTABLE, COMPLETED, COURSE, FILESTORAGE, USERTABLE;
 
 create table USERTABLE (
@@ -230,11 +228,11 @@ insert into EVENTTABLE (title, advisor_id, start_date, end_date)
 
 -- From the events in admin login
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 12:30:00', 0);
+    values (1, '2017-04-15 12:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 12:40:00', 0);
+    values (1, '2017-04-15 12:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-15 12:50:00', 0);
+    values (1, '2017-04-15 12:50:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
     values (2, '2017-04-28 08:30:00', 1, 4);
@@ -252,45 +250,45 @@ insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
     values (2, '2017-04-28 09:30:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
-    values (2, '2017-04-28 16:00:00', 1, 8);
+    values (3, '2017-04-28 16:00:00', 1, 8);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
-    values (2, '2017-04-28 16:10:00', 1, 9);
+    values (3, '2017-04-28 16:10:00', 1, 9);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
-    values (2, '2017-04-28 16:20:00', 1, 10);
+    values (3, '2017-04-28 16:20:00', 1, 10);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-28 16:30:00', 0);
+    values (3, '2017-04-28 16:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-28 16:40:00', 0);
+    values (3, '2017-04-28 16:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-28 16:50:00', 0);
+    values (3, '2017-04-28 16:50:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-25 12:30:00', 0);
+    values (4, '2017-04-25 12:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked, student_id)
-    values (2, '2017-04-25 12:40:00', 1, 11);
+    values (4, '2017-04-25 12:40:00', 1, 11);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-25 12:50:00', 0);
+    values (4, '2017-04-25 12:50:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-25 08:00:00', 0);
+    values (5, '2017-04-25 08:00:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-25 08:10:00', 0);
+    values (5, '2017-04-25 08:10:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-04-25 08:20:00', 0);
+    values (5, '2017-04-25 08:20:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-2 13:30:00', 0);
+    values (6, '2017-05-2 13:30:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-2 13:40:00', 0);
+    values (6, '2017-05-2 13:40:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-2 13:50:00', 0);
+    values (6, '2017-05-2 13:50:00', 0);
 
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-5 11:00:00', 0);
+    values (7, '2017-05-5 11:00:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-5 11:10:00', 0);
+    values (7, '2017-05-5 11:10:00', 0);
 insert into APPOINTMENTTABLE (event_id, appointment_time, booked)
-    values (2, '2017-05-5 11:20:00', 0);
+    values (7, '2017-05-5 11:20:00', 0);
 
 /*********************************************************************************************************
 INSERT COURSES
@@ -484,4 +482,3 @@ VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1513');
 
 INSERT INTO COMPLETED (STUDENT_ID, COURSE_TYPE, COURSE_NUM)
 VALUES((SELECT ID FROM USERTABLE WHERE USERNAME='john@uco.edu'),'CMSC', '1613');
-
