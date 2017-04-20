@@ -65,7 +65,7 @@
                         <p:schedule id="schedule" value="#{advisorScheduleView.eventModel}" draggable="false" 
                                     resizable="false" slotMinutes="10" tooltip="true" widgetVar="myschedule" timeZone="GMT-5">
 
-                            <p:ajax event="dateSelect" listener="#{advisorScheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+                            <p:ajax event="dateSelect" listener="#{advisorScheduleView.onDateSelect}" update="eventDetails, dialog" oncomplete="PF('eventDialog').show();" />
                             <p:ajax event="eventSelect" listener="#{advisorScheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
                             <!--<p:ajax event="eventMove" listener="#{advisorScheduleView.onEventMove}" update="messages" />-->
                             <!--<p:ajax event="eventResize" listener="#{advisorScheduleView.onEventResize}" update="messages" />-->
@@ -79,13 +79,15 @@
                             <p:inputText id="title" value="#{advisorScheduleView.event.title}" required="true" />
 
                             <p:outputLabel for="from" value="From:" />
-                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeOnly="true"  pattern="hh:mm a"> <!--timeZone="GMT-5"-->
+                            <p:calendar id="from" value="#{advisorScheduleView.event.startDate}" timeOnly="true"  pattern="hh:mm a">
                                 <p:ajax event="dateSelect" listener="#{advisorScheduleView.onTimeSelect}" update="to" />
                             </p:calendar>
 
                             <p:outputLabel for="to" value="To:" />
                             <p:calendar id="to" value="#{advisorScheduleView.event.endDate}" timeOnly="true" pattern="hh:mm a" 
-                                        minMinute = "#{advisorScheduleView.startMinute}" minHour="#{advisorScheduleView.startHour}"/> 
+                                        minHour="#{advisorScheduleView.startHour}" minMinute="#{advisorScheduleView.startMinute}">
+                                <p:ajax event="dateSelect" listener="#{advisorScheduleView.onSetMinute}" update="to"/>
+                            </p:calendar>
 
                             <f:facet name="footer">
                                 <p:commandButton value="Cancel" actionListener="#{advisorScheduleView.cancelEvent}"  oncomplete="PF('myschedule').update();PF('eventDialog').hide();"/>
