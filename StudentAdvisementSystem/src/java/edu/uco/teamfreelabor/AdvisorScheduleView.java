@@ -19,6 +19,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
+import javax.mail.Session;
 import javax.sql.DataSource;
 
 import org.primefaces.event.SelectEvent;
@@ -63,7 +64,7 @@ public class AdvisorScheduleView implements Serializable {
 
     //If event is changed but not saved used to reload the event
     private ScheduleEvent eventBackup = new DefaultScheduleEvent();
-    
+
     //testing for appointment stuffsss -----
     private ArrayList<MyAppointments> myAppointments = new ArrayList<>();
 
@@ -159,9 +160,6 @@ public class AdvisorScheduleView implements Serializable {
             throw new SQLException("conn is null; Can't get db connection");
         }
 
-        System.out.println("updateAppointment startTime: " + sdf.format(startTime.getTime()));
-        System.out.println("updateAppointment endTime: " + sdf.format(endTime.getTime()));
-
         try {
             PreparedStatement ps
                     = conn.prepareStatement("update EVENTTABLE set TITLE = '"
@@ -198,6 +196,8 @@ public class AdvisorScheduleView implements Serializable {
 
             //Get the last inserted id from this admin
             ResultSet rs = ps.executeQuery("select last_insert_id() as last_id from EVENTTABLE");
+
+            eventModel.addEvent(event);
 
             //Must check next before doing anything
             if (rs.next()) {
@@ -267,8 +267,6 @@ public class AdvisorScheduleView implements Serializable {
         try {
             PreparedStatement ps;
 
-            System.out.println("makeTimeSlots end  : " + end.getTime());
-
             //Make time slots from the date
             do {
                 //Insert the appointment into the table
@@ -279,9 +277,8 @@ public class AdvisorScheduleView implements Serializable {
                         + sdf.format(start.getTime()) + "', 0)"
                 );
                 ps.execute();
-                //Make the start time go up by the slot time amount
-                System.out.println("makeTimeSlots start: " + start.getTime());
 
+                //Make the start time go up by the slot time amount
                 start.set(Calendar.MINUTE, start.get(Calendar.MINUTE) + SLOT_TIME_AMOUNT);
             } while (end.after(start));
         } finally {
@@ -323,16 +320,21 @@ public class AdvisorScheduleView implements Serializable {
         this.event = event;
     }
 
+    //Create the appointment, event, and correct the times with the dates
+    private void createNewEvent() {
+        correctDateTime();
+
+        try {
+            makeEvent();
+            makeAppointments();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
-            try {
-                correctDateTime();
-                makeEvent();
-                makeAppointments();
-                eventModel.addEvent(event);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            createNewEvent();
         } else {
             correctDateTime();
             checkEventTimes();
@@ -363,48 +365,56 @@ public class AdvisorScheduleView implements Serializable {
         //If either date or the title is changed update the appointment
         boolean changesMade = false;
 
-        //Need to check if the start time is past the end time and handle it 
-        //differently. SQL Exception happens right now
-        
-        //Check start time
-        if (oldStart.after(newStart)) {
-            changesMade = true;
+        //If the new start time is past the old end time remove the events and 
+        //appointments
+        if (newStart.after(oldEnd)) {
+            deleteEvent();
 
-            System.out.println("checkEventTimes START old after new *********************");
-            try {
-                makeAppointments(newStart, oldStart);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            //Make a new event with appointments 
+            createNewEvent();
+        } else {
+            //Need to check if the start time is past the end time and handle it 
+            //differently. SQL Exception happens right now
+            //Check start time
+            if (oldStart.after(newStart)) {
+                changesMade = true;
+
+                System.out.println("checkEventTimes START old after new *********************");
+                try {
+                    makeAppointments(newStart, oldStart);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (oldStart.before(newStart)) {
+                changesMade = true;
+
+                System.out.println("checkEventTimes START old before new **********************");
+                try {
+                    removeAppointmentsBefore();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        } else if (oldStart.before(newStart)) {
-            changesMade = true;
 
-            System.out.println("checkEventTimes START old before new **********************");
-            try {
-                removeAppointmentsBefore();
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+            //Check end time
+            if (oldEnd.after(newEnd)) {
+                changesMade = true;
 
-        //Check end time
-        if (oldEnd.after(newEnd)) {
-            changesMade = true;
+                System.out.println("checkEventTimes END old after new **********************");
+                try {
+                    removeAppointmentsAfter();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (oldEnd.before(newEnd)) {
+                changesMade = true;
 
-            System.out.println("checkEventTimes END old after new **********************");
-            try {
-                removeAppointmentsAfter();
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (oldEnd.before(newEnd)) {
-            changesMade = true;
-
-            System.out.println("checkEventTimes END old before new **********************");
-            try {
-                makeAppointments(oldEnd, newEnd);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("checkEventTimes END old before new **********************");
+                try {
+                    makeAppointments(oldEnd, newEnd);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
@@ -448,10 +458,37 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-            PreparedStatement ps
-                    = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
-                            + event.getId() + " AND APPOINTMENT_TIME < '"
-                            + sdf.format(startTime.getTime()) + "'");
+            //Find if there are any booked appointments and send emails that they
+            //need to reschedule
+            PreparedStatement ps = conn.prepareStatement("SELECT u.id, u.email, u.advisement_status "
+                    + "FROM USERTABLE u "
+                    + "INNER JOIN APPOINTMENTTABLE a on u.id = a.student_id "
+                    + "INNER JOIN EVENTTABLE e on e.ID = a.EVENT_ID "
+                    + "WHERE a.BOOKED = 1 and e.ID = " + event.getId()
+                    + " AND a.APPOINTMENT_TIME < '"
+                    + sdf.format(endTime.getTime()) + "'");
+
+            ResultSet results = ps.executeQuery();
+
+            //Change the students status when the appointment is canceled 
+            PreparedStatement updateStatus;
+
+            //Send email out to the students
+            while (results.next()) {
+                sendCancellationEmail(
+                        results.getString("EMAIL"),
+                        results.getString("ADVISEMENT_STATUS"));
+
+                //Set the status to the default
+                updateStatus = conn.prepareStatement("UPDATE usertable SET advisement_status = 'Not Selected' "
+                        + "WHERE usertable.id = " + results.getInt("ID"));
+
+                updateStatus.executeUpdate();
+            }
+
+            ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+                    + event.getId() + " AND APPOINTMENT_TIME < '"
+                    + sdf.format(startTime.getTime()) + "'");
             ps.execute();
         } finally {
             conn.close();
@@ -471,10 +508,37 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-            PreparedStatement ps
-                    = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
-                            + event.getId() + " AND APPOINTMENT_TIME >= '"
-                            + sdf.format(endTime.getTime()) + "'");
+            //Find if there are any booked appointments and send emails that they
+            //need to reschedule
+            PreparedStatement ps = conn.prepareStatement("SELECT u.id, u.email, u.advisement_status "
+                    + "FROM USERTABLE u "
+                    + "INNER JOIN APPOINTMENTTABLE a on u.id = a.student_id "
+                    + "INNER JOIN EVENTTABLE e on e.ID = a.EVENT_ID "
+                    + "WHERE a.BOOKED = 1 and e.ID = " + event.getId()
+                    + " AND a.APPOINTMENT_TIME >= '"
+                    + sdf.format(endTime.getTime()) + "'");
+
+            ResultSet results = ps.executeQuery();
+
+            //Change the students status when the appointment is canceled 
+            PreparedStatement updateStatus;
+
+            //Send email out to the students
+            while (results.next()) {
+                sendCancellationEmail(
+                        results.getString("EMAIL"),
+                        results.getString("ADVISEMENT_STATUS"));
+
+                //Set the status to the default
+                updateStatus = conn.prepareStatement("UPDATE usertable SET advisement_status = 'Not Selected' "
+                        + "WHERE usertable.id = " + results.getInt("ID"));
+
+                updateStatus.executeUpdate();
+            }
+
+            ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+                    + event.getId() + " AND APPOINTMENT_TIME >= '"
+                    + sdf.format(endTime.getTime()) + "'");
             ps.execute();
         } finally {
             conn.close();
@@ -494,8 +558,34 @@ public class AdvisorScheduleView implements Serializable {
         }
 
         try {
-            //Remove all apointments
-            PreparedStatement ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
+            //Find if there are any booked appointments and send emails that they
+            //need to reschedule
+            PreparedStatement ps = conn.prepareStatement("SELECT u.id, u.email, u.advisement_status "
+                    + "FROM USERTABLE u "
+                    + "INNER JOIN APPOINTMENTTABLE a on u.id = a.student_id "
+                    + "INNER JOIN EVENTTABLE e on e.ID = a.EVENT_ID "
+                    + "WHERE a.BOOKED = 1 and e.ID = " + event.getId());
+
+            ResultSet results = ps.executeQuery();
+
+            //Change the students status when the appointment is canceled 
+            PreparedStatement updateStatus;
+
+            //Send email out to the students
+            while (results.next()) {
+                sendCancellationEmail(
+                        results.getString("EMAIL"),
+                        results.getString("ADVISEMENT_STATUS"));
+
+                //Set the status to the default
+                updateStatus = conn.prepareStatement("UPDATE usertable SET advisement_status = 'Not Selected' "
+                        + "WHERE usertable.id = " + results.getInt("ID"));
+
+                updateStatus.executeUpdate();
+            }
+
+            //Remove apointment
+            ps = conn.prepareStatement("delete from APPOINTMENTTABLE where EVENT_ID = "
                     + event.getId());
             ps.execute();
 
@@ -504,6 +594,18 @@ public class AdvisorScheduleView implements Serializable {
 
         } finally {
             conn.close();
+        }
+    }
+
+    private void sendCancellationEmail(String email, String date) {
+        Email sendEmail = new Email();
+        String message = "You appointment on " + date + " has been "
+                + "cancled. Please resechedule as soon as possible.";
+        Session session = null;
+        try {
+            sendEmail.sendEmail(session, email, message);
+        } catch (Exception ex) {
+            Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -524,7 +626,18 @@ public class AdvisorScheduleView implements Serializable {
         ((DefaultScheduleEvent) event).setEndDate(eventBackup.getEndDate());
 
         //Reset the min time selection for end time
-        setMinTimeSelection();
+        resetTime();
+        resetEvent();
+    }
+
+    private void resetEvent() {
+        event = new DefaultScheduleEvent();
+    }
+
+    //Reset the time 
+    private void resetTime() {
+        startHour = 0;
+        startMinute = 0;
     }
 
     //Make a temp event to store the values.
@@ -542,11 +655,27 @@ public class AdvisorScheduleView implements Serializable {
         Calendar time = Calendar.getInstance();
         time.setTime(event.getStartDate());
 
+        //Used to set the min hour for end time
         startHour = time.get(Calendar.HOUR_OF_DAY);
+    }
 
-        //******************BUG*********************
-        //Need to only limit minutes when hour is the same
-        startMinute = time.get(Calendar.MINUTE);
+    //When the start hour is the same as the end hour limit the minuets 
+    public void onSetMinute() {
+        //Use a calendar so hour and minute can be pulled
+        Calendar time = Calendar.getInstance();
+        time.setTime(event.getStartDate());
+
+        startHour = time.get(Calendar.HOUR_OF_DAY);
+        int checkMin = time.get(Calendar.MINUTE);
+
+        //Only limit the minutes if the hour is the same as start time hour
+        time.setTime(event.getEndDate());
+
+        if (startHour == time.get(Calendar.HOUR_OF_DAY)) {
+            startMinute = checkMin;
+        } else {
+            startMinute = 0;
+        }
     }
 
     //When the start time is changed adjustment may need to be made to the end
@@ -565,15 +694,15 @@ public class AdvisorScheduleView implements Serializable {
             ((DefaultScheduleEvent) event).setEndDate(event.getStartDate());
         }
     }
-    
-    public ArrayList<MyAppointments> retrieveApps() throws SQLException{
-        if(!myAppointments.isEmpty())
+
+    public ArrayList<MyAppointments> retrieveApps() throws SQLException {
+        if (!myAppointments.isEmpty()) {
             myAppointments.clear();
-        
+        }
+
         ArrayList<MyAppointments> temp = new ArrayList<>();
-        
-        System.out.println("We at least got to the method!");
-         if (ds == null) {
+
+        if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
 
@@ -591,20 +720,18 @@ public class AdvisorScheduleView implements Serializable {
                     + "where e.`ADVISOR_ID` = ? and a.`BOOKED` = 1;");
             ps.setString(1, userId);
             ResultSet results = ps.executeQuery();
-            System.out.println("The Advisor ID = " + userId);
-            while(results.next()){
-                System.out.println("We at least started the query");
+
+            while (results.next()) {
                 MyAppointments newApp = new MyAppointments();
                 newApp.setID(results.getInt("ID"));
                 newApp.setFirstName(results.getString("FIRST_NAME"));
                 newApp.setLastName(results.getString("LAST_NAME"));
                 newApp.setTime(results.getTimestamp("APPOINTMENT_TIME"));
                 temp.add(newApp);
-                System.out.println(newApp);
             }
-        
+
         } finally {
-          conn.close();  
+            conn.close();
         }
         return temp;
     }
@@ -636,10 +763,8 @@ public class AdvisorScheduleView implements Serializable {
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
-    public ArrayList<MyAppointments> getMyAppointments(){
+
+    public ArrayList<MyAppointments> getMyAppointments() {
         return myAppointments;
     }
-    
-   
 }
