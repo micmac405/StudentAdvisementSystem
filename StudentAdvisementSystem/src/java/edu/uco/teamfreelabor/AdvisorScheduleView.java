@@ -160,9 +160,6 @@ public class AdvisorScheduleView implements Serializable {
             throw new SQLException("conn is null; Can't get db connection");
         }
 
-        System.out.println("updateAppointment startTime: " + sdf.format(startTime.getTime()));
-        System.out.println("updateAppointment endTime: " + sdf.format(endTime.getTime()));
-
         try {
             PreparedStatement ps
                     = conn.prepareStatement("update EVENTTABLE set TITLE = '"
@@ -270,8 +267,6 @@ public class AdvisorScheduleView implements Serializable {
         try {
             PreparedStatement ps;
 
-            System.out.println("makeTimeSlots end  : " + end.getTime());
-
             //Make time slots from the date
             do {
                 //Insert the appointment into the table
@@ -282,9 +277,8 @@ public class AdvisorScheduleView implements Serializable {
                         + sdf.format(start.getTime()) + "', 0)"
                 );
                 ps.execute();
-                //Make the start time go up by the slot time amount
-                System.out.println("makeTimeSlots start: " + start.getTime());
 
+                //Make the start time go up by the slot time amount
                 start.set(Calendar.MINUTE, start.get(Calendar.MINUTE) + SLOT_TIME_AMOUNT);
             } while (end.after(start));
         } finally {
@@ -599,8 +593,6 @@ public class AdvisorScheduleView implements Serializable {
         } catch (Exception ex) {
             Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        System.out.println("Sending emails: " + email + " on date: " + date);
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
@@ -620,7 +612,18 @@ public class AdvisorScheduleView implements Serializable {
         ((DefaultScheduleEvent) event).setEndDate(eventBackup.getEndDate());
 
         //Reset the min time selection for end time
-        setMinTimeSelection();
+        resetTime();
+        resetEvent();
+    }
+
+    private void resetEvent() {
+        event = new DefaultScheduleEvent();
+    }
+
+    //Reset the time 
+    private void resetTime() {
+        startHour = 0;
+        startMinute = 0;
     }
 
     //Make a temp event to store the values.
@@ -638,11 +641,27 @@ public class AdvisorScheduleView implements Serializable {
         Calendar time = Calendar.getInstance();
         time.setTime(event.getStartDate());
 
+        //Used to set the min hour for end time
         startHour = time.get(Calendar.HOUR_OF_DAY);
+    }
 
-        //******************BUG*********************
-        //Need to only limit minutes when hour is the same
-        startMinute = time.get(Calendar.MINUTE);
+    //When the start hour is the same as the end hour limit the minuets 
+    public void onSetMinute() {
+        //Use a calendar so hour and minute can be pulled
+        Calendar time = Calendar.getInstance();
+        time.setTime(event.getStartDate());
+
+        startHour = time.get(Calendar.HOUR_OF_DAY);
+        int checkMin = time.get(Calendar.MINUTE);
+
+        //Only limit the minutes if the hour is the same as start time hour
+        time.setTime(event.getEndDate());
+
+        if (startHour == time.get(Calendar.HOUR_OF_DAY)) {
+            startMinute = checkMin;
+        } else {
+            startMinute = 0;
+        }
     }
 
     //When the start time is changed adjustment may need to be made to the end
@@ -669,7 +688,6 @@ public class AdvisorScheduleView implements Serializable {
 
         ArrayList<MyAppointments> temp = new ArrayList<>();
 
-        System.out.println("We at least got to the method!");
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -688,16 +706,14 @@ public class AdvisorScheduleView implements Serializable {
                     + "where e.`ADVISOR_ID` = ? and a.`BOOKED` = 1;");
             ps.setString(1, userId);
             ResultSet results = ps.executeQuery();
-            System.out.println("The Advisor ID = " + userId);
+
             while (results.next()) {
-                System.out.println("We at least started the query");
                 MyAppointments newApp = new MyAppointments();
                 newApp.setID(results.getInt("ID"));
                 newApp.setFirstName(results.getString("FIRST_NAME"));
                 newApp.setLastName(results.getString("LAST_NAME"));
                 newApp.setTime(results.getTimestamp("APPOINTMENT_TIME"));
                 temp.add(newApp);
-                System.out.println(newApp);
             }
 
         } finally {
