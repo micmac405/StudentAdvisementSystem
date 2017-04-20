@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -75,15 +76,30 @@ public class StudentScheduleView implements Serializable {
                     + userBean.getUsername() + "'"
             );
 
+            as.executeUpdate();
+
+            //Check for another appointment before setting the new one
+            as = conn.prepareStatement(
+                    "SELECT * FROM appointmenttable WHERE student_id = "
+                    + userBean.getUserID());
+
+            ResultSet results = as.executeQuery();
+
+            if (results.next()) {
+                as = conn.prepareStatement(
+                "UPDATE appointmenttable SET STUDENT_ID = ?, BOOKED = 0 "
+                + " WHERE STUDENT_ID = " + userBean.getUserID());
+                as.setNull(1, Types.INTEGER);
+                as.executeUpdate();
+            }
+
             //Update the event to include the student id
-            //*************** need to change get id to be the id from usertable not UCO_ID
-            //*************** remove select statment and replace with userBean.getID() when its usertable id
-            PreparedStatement us = conn.prepareStatement(
-                    "UPDATE appointmenttable SET STUDENT_ID = (select id from usertable WHERE USERNAME = '"
-                    + userBean.getUsername() + "'), BOOKED = 1 WHERE ID =  " + event.getId()
+            as = conn.prepareStatement(
+                    "UPDATE appointmenttable SET STUDENT_ID = "
+                    + userBean.getUserID()
+                    + ", BOOKED = 1 WHERE ID =  " + event.getId()
             );
 
-            us.executeUpdate();
             as.executeUpdate();
 
             //Update userbean value to match the database
@@ -92,14 +108,14 @@ public class StudentScheduleView implements Serializable {
         } finally {
             conn.close();
         }
-        
+
         readAppointments();
     }
 
     private void readAppointments() throws SQLException {
         //Remove all appointments and reload
         eventModel.clear();
-        
+
         if (ds == null) {
             throw new SQLException("ds is null; Can't get data source");
         }
@@ -136,7 +152,6 @@ public class StudentScheduleView implements Serializable {
     }
 
     public void removeEvent(ActionEvent actionEvent) {
-        System.out.println("****************** remove event ***************");
 
     }
 

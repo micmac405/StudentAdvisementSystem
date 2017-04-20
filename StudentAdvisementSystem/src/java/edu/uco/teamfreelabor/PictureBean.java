@@ -47,13 +47,11 @@ public class PictureBean  {
 
     // Note: make getter as simple as possible for performance issues
     public List<PictureInfo> getList() throws SQLException {
-        System.out.println("========= getList() ===");
         return list;
     }
 
     // JSF page: updateList() called explicitly before getter of list (getList())
     public void updateList() throws SQLException {
-        System.out.println("========= updateList() ===");
         try {
             list = loadPictureList();
         } catch (SQLException ex) {
@@ -95,7 +93,7 @@ public class PictureBean  {
         inputStream = null;
         try {
             inputStream = part.getInputStream();
-            System.out.println("About to insert into FILESTORAGE. Here is USERID: " + userBean.getUserID());
+
             PreparedStatement insertQuery = conn.prepareStatement(
                     "INSERT INTO FILESTORAGE (FILE_ID, FILE_NAME, FILE_TYPE, FILE_SIZE, FILE_CONTENTS) "
                     + "VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE FILE_NAME=VALUES(FILE_NAME), " 

@@ -27,14 +27,12 @@ public class ImageServlet extends HttpServlet {
             throws ServletException, IOException {
         int fileID = -1;
         if(request.getParameter("fileid") != null ){
-            System.out.println("fileid != null!!");
             fileID = Integer.parseInt(request.getParameter("fileid"));
         }
         else{
             System.out.println("fileid == null!!");
         }
         
-        System.out.println("ImageServ fileid: " + fileID);
         String inLineParam = request.getParameter("inline");
         boolean inLine = false;
         if (inLineParam != null && inLineParam.equals("true")) {
@@ -49,7 +47,6 @@ public class ImageServlet extends HttpServlet {
 
             ResultSet result = selectQuery.executeQuery();
             if (!result.next()) {
-                System.out.println("***** SELECT query failed for ImageServlet");
             }
 
             String fileType = result.getString("FILE_TYPE");

@@ -183,10 +183,8 @@ public class UserBean implements Serializable {
             if (result.next() == true) {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Oops email is already taken! Contact Dr.Sung if error!", null);
                 FacesContext.getCurrentInstance().addMessage("registrationform:email", facesMsg);
-                System.out.print("Inside if statement. Found user in temp table!");
                 return "/registration";
             }
-            System.out.print("user: " + email + "was not found in temp table! Complete function");
 
             //lets create random code for their email
             code = "";
@@ -213,14 +211,7 @@ public class UserBean implements Serializable {
             ps.setString(9, phoneNumber);
             ps.setString(10, code);
             major = major.trim();
-            System.out.print(major);
-            System.out.print("Got this far");
             ps.executeUpdate();
-            System.out.print("If you see this it updated db");
-            //email debugging to see if it gets this far
-            System.out.print("Email about to send!");
-            //code debugging
-            System.out.print(code);
 
             Email sendEmail = new Email();
             String message = "Thank you for registering an account with UCO advisement!"
@@ -277,7 +268,7 @@ public class UserBean implements Serializable {
             else {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Code! Try again!", null);
                 FacesContext.getCurrentInstance().addMessage("validationform:code", facesMsg);
-                //System.out.print("INSIDE CODE ERROR");
+
                 return "/validation";
             }
 
