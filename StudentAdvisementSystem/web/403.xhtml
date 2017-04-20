@@ -3,20 +3,64 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>Facelet Title</title>
+        <title>403 - Forbidden</title>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
+        <link rel="stylesheet" href="resources/css/style.css"/>
+        <link rel="stylesheet" href="resources/css/form-elements.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+
+
+        <meta charset="UTF-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <meta name="Author" content="Micah McKinnon"></meta>        
     </h:head>
     <h:body>
         #{session.invalidate()}
-        <h2 style="color: red">Unauthorized Access!</h2>
-        <h3>
-            This page is from a JSF page named 403.xhtml (a customized 403 error page) <br />
-            If you don't have this page, a default error page will appear.<br />
-            It's a better idea to have a customized 403 error page. <br />
-            In web.xml, the name of 403 error page is define.
-            <br />
-            <br/>
-            <h:link value="Go Home" outcome="index" />
-        </h3>
+
+        <div class="top-content">
+            <div class="inner-bg">
+                <div class="container">
+                    <!--div for header -->
+                    <div class="row">
+                        <!--<div class="col-sm-8 col-sm-offset-2 text-center">
+                            <h1><strong>UCO</strong> Student Advisement Site</h1>
+                        </div>-->
+                    </div>
+                    <div class="center-element">
+                        <!--div for login across page -->
+                        <div class="row" style="width: 45% ; margin: 0 auto;">
+                            <div class="center-element">
+                                <!--div for small login area -->
+                                <div class="form-box center-element">
+                                    <!--div for Login header -->
+                                    <div class="form-top" >
+                                        <div class="form-top-left text-left error">
+                                            <h1 style="font-size: 4em; font-weight: bold;"> 403! </h1>
+                                            
+                                        </div>
+                                        <div class="form-top-right">
+                                            <!--<img src="assets/images/CS Logo.png" alt=""/>-->
+                                            <i class="fa fa-user-times" style="color:red"></i>
+                                        </div>
+                                    </div>
+                                    <!--div for login/password and sign in btn -->
+                                    <div class="form-bottom text-center">
+                                        <p>Unfortunately, you do not have permission to view this page.</p>
+                                        <br />
+                                        <a class="btn btn-primary" href="/StudentAdvisementSystem/faces/login.xhtml">
+                                            <i class="fa fa-sign-in fa-fw"></i> Sign back in</a>
+                                        <!--<h:link value="Sign back in here" outcome="/login" /><br />-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </h:body>
 </html>
 
