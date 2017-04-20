@@ -320,16 +320,21 @@ public class AdvisorScheduleView implements Serializable {
         this.event = event;
     }
 
+    //Create the appointment, event, and correct the times with the dates
+    private void createNewEvent() {
+        correctDateTime();
+
+        try {
+            makeEvent();
+            makeAppointments();
+        } catch (SQLException ex) {
+            Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void addEvent(ActionEvent actionEvent) {
         if (event.getId() == null) {
-            try {
-                correctDateTime();
-                makeEvent();
-                makeAppointments();
-
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            createNewEvent();
         } else {
             correctDateTime();
             checkEventTimes();
@@ -360,47 +365,56 @@ public class AdvisorScheduleView implements Serializable {
         //If either date or the title is changed update the appointment
         boolean changesMade = false;
 
-        //Need to check if the start time is past the end time and handle it 
-        //differently. SQL Exception happens right now
-        //Check start time
-        if (oldStart.after(newStart)) {
-            changesMade = true;
+        //If the new start time is past the old end time remove the events and 
+        //appointments
+        if (newStart.after(oldEnd)) {
+            deleteEvent();
 
-            System.out.println("checkEventTimes START old after new *********************");
-            try {
-                makeAppointments(newStart, oldStart);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            //Make a new event with appointments 
+            createNewEvent();
+        } else {
+            //Need to check if the start time is past the end time and handle it 
+            //differently. SQL Exception happens right now
+            //Check start time
+            if (oldStart.after(newStart)) {
+                changesMade = true;
+
+                System.out.println("checkEventTimes START old after new *********************");
+                try {
+                    makeAppointments(newStart, oldStart);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (oldStart.before(newStart)) {
+                changesMade = true;
+
+                System.out.println("checkEventTimes START old before new **********************");
+                try {
+                    removeAppointmentsBefore();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-        } else if (oldStart.before(newStart)) {
-            changesMade = true;
 
-            System.out.println("checkEventTimes START old before new **********************");
-            try {
-                removeAppointmentsBefore();
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+            //Check end time
+            if (oldEnd.after(newEnd)) {
+                changesMade = true;
 
-        //Check end time
-        if (oldEnd.after(newEnd)) {
-            changesMade = true;
+                System.out.println("checkEventTimes END old after new **********************");
+                try {
+                    removeAppointmentsAfter();
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else if (oldEnd.before(newEnd)) {
+                changesMade = true;
 
-            System.out.println("checkEventTimes END old after new **********************");
-            try {
-                removeAppointmentsAfter();
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if (oldEnd.before(newEnd)) {
-            changesMade = true;
-
-            System.out.println("checkEventTimes END old before new **********************");
-            try {
-                makeAppointments(oldEnd, newEnd);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("checkEventTimes END old before new **********************");
+                try {
+                    makeAppointments(oldEnd, newEnd);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdvisorScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
 
