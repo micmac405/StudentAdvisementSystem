@@ -152,7 +152,6 @@ public class StudentScheduleView implements Serializable {
     }
 
     public void removeEvent(ActionEvent actionEvent) {
-        System.out.println("****************** remove event ***************");
 
     }
 

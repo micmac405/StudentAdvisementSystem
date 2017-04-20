@@ -379,7 +379,6 @@ public class AdvisorScheduleView implements Serializable {
             if (oldStart.after(newStart)) {
                 changesMade = true;
 
-                System.out.println("checkEventTimes START old after new *********************");
                 try {
                     makeAppointments(newStart, oldStart);
                 } catch (SQLException ex) {
@@ -388,7 +387,6 @@ public class AdvisorScheduleView implements Serializable {
             } else if (oldStart.before(newStart)) {
                 changesMade = true;
 
-                System.out.println("checkEventTimes START old before new **********************");
                 try {
                     removeAppointmentsBefore();
                 } catch (SQLException ex) {
@@ -400,7 +398,6 @@ public class AdvisorScheduleView implements Serializable {
             if (oldEnd.after(newEnd)) {
                 changesMade = true;
 
-                System.out.println("checkEventTimes END old after new **********************");
                 try {
                     removeAppointmentsAfter();
                 } catch (SQLException ex) {
@@ -409,7 +406,6 @@ public class AdvisorScheduleView implements Serializable {
             } else if (oldEnd.before(newEnd)) {
                 changesMade = true;
 
-                System.out.println("checkEventTimes END old before new **********************");
                 try {
                     makeAppointments(oldEnd, newEnd);
                 } catch (SQLException ex) {

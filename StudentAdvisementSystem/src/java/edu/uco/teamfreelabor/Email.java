@@ -32,7 +32,6 @@ public class Email {
                 "Team Free Labor"));
         msg.setText(message);
         
-        System.out.print("Inside email class");
         Transport.send(msg);
     }
 }

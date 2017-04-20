@@ -23,8 +23,6 @@ public class StudentBean implements Serializable{
 //    }
     
     public String cancelSettings() {
-        System.out.println("**************** CANCEL PROFILE ******************");
-
         return "profile";
     }
 

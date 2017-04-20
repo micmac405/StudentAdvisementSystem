@@ -1,13 +1,12 @@
 package edu.uco.teamfreelabor;
 
-
 public class PictureInfo {
-    
+
     private long id;
     private String name;
     private String type;
     private long size;
-    
+
     public long getId() {
         return id;
     }
@@ -39,7 +38,5 @@ public class PictureInfo {
     public void setSize(long size) {
         this.size = size;
     }
-    
-    
-    
+
 }
