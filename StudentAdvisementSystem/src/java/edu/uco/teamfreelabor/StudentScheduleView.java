@@ -128,7 +128,7 @@ public class StudentScheduleView implements Serializable {
 
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0"
+                    "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0 AND APPOINTMENT_TIME >= NOW()"
             );
 
             // Get non-booked appointments from database
