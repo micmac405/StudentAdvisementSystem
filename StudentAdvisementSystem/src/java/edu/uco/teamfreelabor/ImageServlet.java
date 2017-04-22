@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,22 +27,33 @@ public class ImageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int fileID = -1;
-        if(request.getParameter("fileid") != null ){
-            fileID = Integer.parseInt(request.getParameter("fileid"));
+
+        try {
+            loadImage(request, response);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ImageServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        else{
+    }
+
+    private void loadImage(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {
+        int fileID = -1;
+        if (request.getParameter("fileid") != null) {
+            fileID = Integer.parseInt(request.getParameter("fileid"));
+        } else {
             System.out.println("fileid == null!!");
         }
-        
+
         String inLineParam = request.getParameter("inline");
         boolean inLine = false;
         if (inLineParam != null && inLineParam.equals("true")) {
             inLine = true;
         }
 
+        Connection conn = ds.getConnection();
+
         try {
-            Connection conn = ds.getConnection();
+
             PreparedStatement selectQuery = conn.prepareStatement(
                     "SELECT * FROM FILESTORAGE WHERE FILE_ID=?");
             selectQuery.setInt(1, fileID);
@@ -79,6 +92,8 @@ public class ImageServlet extends HttpServlet {
 
         } catch (SQLException e) {
 
+        } finally {
+            conn.close();
         }
     }
 
