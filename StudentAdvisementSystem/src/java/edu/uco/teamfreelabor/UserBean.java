@@ -198,15 +198,14 @@ public class UserBean implements Serializable {
             PreparedStatement ps = conn.prepareStatement(userTable);
             //right now I am using email as username for temp purposes. I will eventually make a parsing function to get username = "username"@uco.edu
             ps.setString(1, email);
+            password = encrypt();
             ps.setString(2, password);
             ps.setString(3, email);
             ps.setString(4, firstName);
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            advisementStatus = "Need Advisement!";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, UserBean.DEFAULT_ADVISEMENT_STATUS);
             ps.setString(9, phoneNumber);
             ps.setString(10, code);
             major = major.trim();
@@ -258,7 +257,6 @@ public class UserBean implements Serializable {
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
                 password = (result.getString("PASSWORD"));
-                password = encrypt();
 
             } //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
