@@ -279,10 +279,7 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            advisementStatus = "Need Advisement!";
-            //filedId = "1";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, UserBean.DEFAULT_ADVISEMENT_STATUS);
             ps.setString(9, phoneNumber);
 
             ps.executeUpdate();
@@ -427,5 +424,11 @@ public class UserBean implements Serializable {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+    
+    public boolean hasCode(){
+        boolean codeFlag = false;
+        System.out.println("This is a test of the code system " + username);
+        return codeFlag;
     }
 }
