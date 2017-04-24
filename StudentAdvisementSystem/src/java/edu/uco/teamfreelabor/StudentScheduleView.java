@@ -42,7 +42,9 @@ public class StudentScheduleView implements Serializable {
 
     public void init() {
         eventModel = new DefaultScheduleModel();
-
+        //Makes a link show if there are more events than space
+        ((DefaultScheduleModel)eventModel).setEventLimit(true);
+        
         try {
             readAppointments();
         } catch (SQLException ex) {
