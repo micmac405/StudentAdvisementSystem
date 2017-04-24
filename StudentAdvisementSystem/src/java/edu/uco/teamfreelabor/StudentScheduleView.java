@@ -40,10 +40,11 @@ public class StudentScheduleView implements Serializable {
     private ScheduleModel eventModel;
     private DefaultScheduleEvent event = new DefaultScheduleEvent();
 
-    @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-
+        //Makes a link show if there are more events than space
+        ((DefaultScheduleModel)eventModel).setEventLimit(true);
+        
         try {
             readAppointments();
         } catch (SQLException ex) {
@@ -87,8 +88,8 @@ public class StudentScheduleView implements Serializable {
 
             if (results.next()) {
                 as = conn.prepareStatement(
-                "UPDATE appointmenttable SET STUDENT_ID = ?, BOOKED = 0 "
-                + " WHERE STUDENT_ID = " + userBean.getUserID());
+                        "UPDATE appointmenttable SET STUDENT_ID = ?, BOOKED = 0 "
+                        + " WHERE STUDENT_ID = " + userBean.getUserID());
                 as.setNull(1, Types.INTEGER);
                 as.executeUpdate();
             }
@@ -128,7 +129,7 @@ public class StudentScheduleView implements Serializable {
 
         try {
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0"
+                    "SELECT * FROM APPOINTMENTTABLE WHERE BOOKED = 0 AND APPOINTMENT_TIME >= NOW()"
             );
 
             // Get non-booked appointments from database
@@ -151,8 +152,61 @@ public class StudentScheduleView implements Serializable {
         }
     }
 
-    public void removeEvent(ActionEvent actionEvent) {
+    public void cancelAppointment() {
+        if (!userBean.getAdvisementStatus().equalsIgnoreCase(UserBean.DEFAULT_ADVISEMENT_STATUS)) {
+            try {
+                removeStudentFromAppointment();
+                userBean.setAdvisementStatus(UserBean.DEFAULT_ADVISEMENT_STATUS);
+                resetStudentAdvisementStatus();
+            } catch (SQLException ex) {
+                Logger.getLogger(StudentScheduleView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
+    private void removeStudentFromAppointment() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE appointmenttable SET STUDENT_ID = ?, BOOKED = 0 "
+                    + " WHERE STUDENT_ID = " + userBean.getUserID());
+            ps.setNull(1, Types.INTEGER);
+            ps.executeUpdate();
+        } finally {
+            conn.close();
+        }
+    }
+
+    private void resetStudentAdvisementStatus() throws SQLException {
+        if (ds == null) {
+            throw new SQLException("ds is null; Can't get data source");
+        }
+
+        Connection conn = ds.getConnection();
+
+        if (conn == null) {
+            throw new SQLException("conn is null; Can't get db connection");
+        }
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "UPDATE usertable SET advisement_status = '"
+                + UserBean.DEFAULT_ADVISEMENT_STATUS 
+                +"' WHERE ID = " + userBean.getUserID());
+            
+            ps.execute();
+        } finally {
+            conn.close();
+        }
     }
 
     public String currentEventDetails() {

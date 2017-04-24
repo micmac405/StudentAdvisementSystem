@@ -1,4 +1,5 @@
 package edu.uco.teamfreelabor;
+
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -27,20 +28,21 @@ import javax.faces.application.FacesMessage;
 @SessionScoped
 
 public class UserBean implements Serializable {
-    
+
+    public final static String DEFAULT_ADVISEMENT_STATUS = "Not Selected";
+
     @Resource(name = "jdbc/ds_wsp")
     private DataSource ds;
 
     //Resource for email already configured in glassfish
     @Resource(name = "mail/WSP")
-    
+
     private Session session;
     private String firstName;
     private String lastName;
     private String advisementStatus;
     private ArrayList<UCOClass> courses = StudentUserHelper.studentClasses; //new ArrayList<>();
     private ArrayList<UCOClass> selectedCourses = StudentUserHelper.studentSelectedClasses;//new ArrayList<>();
-    
 
     @Size(min = 3, message = "Username  must be >= 3 characters!")
     @Pattern(regexp = "[a-zA-Z]*", message = "Must be characters only.")
@@ -54,11 +56,10 @@ public class UserBean implements Serializable {
 
     @Pattern(regexp = "\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Incorrect Format! Ex:###-###-####")
     private String phoneNumber;
-    
+
     @Pattern(regexp = "^\\d{8}", message = "UCO ID must be your 8 digit UCO ID Number!")
     private String id;
     private String userID;
-
 
     private String major;
 
@@ -75,9 +76,8 @@ public class UserBean implements Serializable {
         if (fc.getExternalContext().getUserPrincipal() != null) {
             Principal p = fc.getExternalContext().getUserPrincipal();
             username = p.getName();
-            
-            //Pull the user group and only load the needed info **********************
 
+            //Pull the user group and only load the needed info **********************
             try {
                 loadUserInfo(); //Change to loadStudentInfo *****************************
             } catch (SQLException ex) {
@@ -115,7 +115,6 @@ public class UserBean implements Serializable {
                 phoneNumber = (result.getString("PHONE_NUMBER"));
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
-
             }
 
         } finally {
@@ -199,15 +198,14 @@ public class UserBean implements Serializable {
             PreparedStatement ps = conn.prepareStatement(userTable);
             //right now I am using email as username for temp purposes. I will eventually make a parsing function to get username = "username"@uco.edu
             ps.setString(1, email);
+            password = encrypt();
             ps.setString(2, password);
             ps.setString(3, email);
             ps.setString(4, firstName);
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            advisementStatus = "Need Advisement!";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, UserBean.DEFAULT_ADVISEMENT_STATUS);
             ps.setString(9, phoneNumber);
             ps.setString(10, code);
             major = major.trim();
@@ -247,8 +245,7 @@ public class UserBean implements Serializable {
             ResultSet result = ps.executeQuery();
 
             //If result.next() returns true then the code was found
-
-            if(result.next()) {
+            if (result.next()) {
 
                 //Let's get the userinfo
                 User u = new User();
@@ -260,11 +257,8 @@ public class UserBean implements Serializable {
                 major = (result.getString("MAJOR"));
                 advisementStatus = (result.getString("ADVISEMENT_STATUS"));
                 password = (result.getString("PASSWORD"));
-                password = encrypt();
-                
-            }
-            //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
 
+            } //This means this code doesnt exist in the TEMPUSERTABLE we prob need to add error message
             else {
                 FacesMessage facesMsg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid Code! Try again!", null);
                 FacesContext.getCurrentInstance().addMessage("validationform:code", facesMsg);
@@ -285,10 +279,7 @@ public class UserBean implements Serializable {
             ps.setString(5, lastName);
             ps.setString(6, id);
             ps.setString(7, major);
-            advisementStatus = "Need Advisement!";
-            //filedId = "1";
-            //we dont have advisement status on register.xhtml right now so I am using a string literal
-            ps.setString(8, advisementStatus);
+            ps.setString(8, UserBean.DEFAULT_ADVISEMENT_STATUS);
             ps.setString(9, phoneNumber);
 
             ps.executeUpdate();
@@ -347,9 +338,6 @@ public class UserBean implements Serializable {
         this.lastName = lastName;
     }
 
-
-    //public void setGroups(String p) {this.groups = p;}
-    //public String getGroups() {return groups;}
     public String getUsername() {
         return username;
     }
@@ -438,6 +426,9 @@ public class UserBean implements Serializable {
         this.userID = userID;
     }
     
-    
-
+    public boolean hasCode(){
+        boolean codeFlag = false;
+        System.out.println("This is a test of the code system " + username);
+        return codeFlag;
+    }
 }

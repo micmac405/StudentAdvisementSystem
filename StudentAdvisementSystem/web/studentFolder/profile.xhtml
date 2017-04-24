@@ -1,30 +1,28 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+<xhtml xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://xmlns.jcp.org/jsf/html"
+       xmlns:f="http://xmlns.jcp.org/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
-<!--            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> -->
-<!--            <h:outputStylesheet name="css/style.css"/>
-            <h:outputStylesheet name="css/form-elements.css"/>-->
-            <f:metadata>
-                <f:event type="preRenderView" listener="#{userBean.init}"/>
-            </f:metadata>
-            <title>Profile</title>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{userBean.init()}"/>
+        </f:metadata>
+        <title>Profile</title>
     </h:head> 
     <h:body>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!--<f:facet name="last">-->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://use.fontawesome.com/d9195f68cb.js"></script>
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css" />
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" /> 
-        <h:outputStylesheet name="css/style.css"/>
-        <h:outputStylesheet name="css/form-elements.css"/>
-        
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+            <h:outputStylesheet name="css/style.css"/>
+            <h:outputStylesheet name="css/form-elements.css"/>
+        <!--</f:facet>-->
+
+
+
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -69,20 +67,25 @@
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
                     <div class="row placeholders">
                         <div class="col-xs-6 col-sm-3">
-                            <!--<h:graphicImage name="images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
                             <h:graphicImage value="/ImageServlet?fileid=#{userBean.userID}&amp;inline=true"
-                                height="70" width="100" />
-                            <!--<img src="assets/images/CSLogo.png" class="img-responsive" alt="Profile image"/>-->
+                                            height="70" width="100" />
+                            <br/>
                             <h:outputLabel class="h4" value="#{userBean.firstName} #{userBean.lastName}"/>
                         </div>
                         <div class="col-xs-6 col-sm-3 placeholder">
                             <div class="row">
-                                <br />
-                                <br />
-                                <h3>Advisement Status</h3>
-                                <h4>#{userBean.advisementStatus}</h4> <!-- Change to output label -->
-
-                                <!--<button type="button" class="btn btn-default">Edit Appointment</button>-->
+                                <h:form id="status">
+                                    <br />
+                                    <br />
+                                    <h3>Advisement Status</h3>
+                                    <h4 >#{userBean.advisementStatus}</h4> 
+                                    <br/>
+                                    <p:commandButton styleClass="btn btn-primary"
+                                                     value="Cancel" 
+                                                     immediate="true"
+                                                     action="#{studentScheduleView.cancelAppointment()}"
+                                                     update="status"/>
+                                </h:form>
                             </div>
                         </div>
                         <div class="clear-columns clearfix visible-xs-block"></div>
@@ -126,16 +129,8 @@
         </div>
         <!-- Bootstrap core JavaScript
     ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <!--        <script src="assets/js/jquery.min.js"></script>
-                <script src="bootstrap/js/bootstrap.min.js"></script>
-                 IE10 viewport hack for Surface/desktop Windows 8 bug 
-                <script src="assets/js/ie10-viewport-bug-workaround.js"></script>-->
-        <!-- jQuery -->
-        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>-->
-
         <!-- Minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     </h:body>
-</html>
+</xhtml>
 
